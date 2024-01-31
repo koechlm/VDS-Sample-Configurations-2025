@@ -582,7 +582,7 @@
     <Resource Include="Vault.Custom\factory-edit.ico" />
     <Resource Include="Vault.Custom\factory-info.ico" />
     <Resource Include="Vault.Custom\factory.ico" />
-    <Resource Include="Vault.Custom\Folder2024.xml" />
+    <Resource Include="Vault.Custom\Folder2025.xml" />
     <Resource Include="Vault.Custom\GoToReplacedBy.ico" />
     <Resource Include="Vault.Custom\GoToSelectedFile.ico" />
     <Resource Include="Vault.Custom\GoToSource.ico" />
