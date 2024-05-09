@@ -228,6 +228,38 @@
             <param name="CustentId">Custom Object Id</param>
             <param name="CustentProperties">Name-Value map of Display Name and Values. All Values return as text.</param>
         </member>
+        <member name="T:VdsSampleUtilities.TreeNode">
+            <summary>
+            Class enabling the Document Tree
+            </summary>
+        </member>
+        <member name="P:VdsSampleUtilities.TreeNode.Name">
+            <summary>
+            Filename
+            </summary>
+        </member>
+        <member name="P:VdsSampleUtilities.TreeNode.Children">
+            <summary>
+            Child references
+            </summary>
+        </member>
+        <member name="P:VdsSampleUtilities.TreeNode.Parents">
+            <summary>
+            Parent references
+            </summary>
+        </member>
+        <member name="P:VdsSampleUtilities.TreeNode.Icon">
+            <summary>
+            Get the Vault Entity Icon
+            </summary>
+        </member>
+        <member name="M:VdsSampleUtilities.TreeNode.#ctor(Autodesk.Connectivity.WebServices.File,Autodesk.DataManagement.Client.Framework.Vault.Currency.Connections.Connection)">
+            <summary>
+            Return parent/child tree nodes of a file
+            </summary>
+            <param name="file">File</param>
+            <param name="con">Vault Connection</param>
+        </member>
         <member name="T:VdsSampleUtilities.InvHelpers">
             <summary>
             Class sharing options to interact with hosting Inventor session
