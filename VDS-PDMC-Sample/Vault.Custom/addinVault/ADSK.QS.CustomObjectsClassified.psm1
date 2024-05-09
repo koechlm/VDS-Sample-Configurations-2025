@@ -11,15 +11,15 @@
 #endregion
 
 #region CatalogLookUp
-Add-Type @"
-public class CatalogData
+
+class CatalogData
 {
-	public string Term_DE {get;set;}
-	public string Term_EN {get;set;}	
-	public string Term_FR {get;set;}
-	public string Term_IT {get;set;}
+	[string]$Term_DE
+	[string]$Term_EN
+	[string]$Term_FR
+	[string]$Term_IT
 }
-"@
+
 
 function mInitializeTermCatalog
 {

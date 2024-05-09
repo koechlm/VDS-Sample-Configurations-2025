@@ -1,16 +1,13 @@
-
-Add-Type @"
-public class itemData
+class itemData
 {
-	public string Item {get;set;}
-	public string Revision {get;set;}
-	public string Title {get;set;}
-	public string Material {get;set;}
-	public string Category {get;set;}
-	public string Description {get;set;}
-	public string StockNumber {get;set;}
+	[string] $Item
+	[string] $Revision
+	[string] $Title
+	[string] $Material
+	[string] $Category
+	[string] $Description
+	[string] $StockNumber
 }
-"@
 
 function mInitializeItemSearch([STRING] $Context) {
 	if ($Prop["_Category"].Value -eq $UIString["Adsk.QS.ItemSearch_14"]) {
