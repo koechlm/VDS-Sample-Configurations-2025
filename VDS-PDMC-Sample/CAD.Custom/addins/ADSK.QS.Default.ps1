@@ -19,7 +19,7 @@ function InitializeWindow {
 	$Global:currentTheme = [Autodesk.DataManagement.Client.Framework.Forms.SkinUtils.WinFormsTheme]::Instance.CurrentTheme
 
 	#Copy Parent Project Number to file property "Project Number" if exists; be careful, not all dialogs might have the textbox, e.g. DA, FG,...
-	If ($Prop["Project"]) {
+	If ($Prop["Project"].Value) {
 		$Global:mPropTrans = mGetPropTranslations
 		if ($dsWindow.FindName("txtPath")) {
 			mGetProjectFolderPropToCADFile  "Name" $mPropTrans["Project"]
