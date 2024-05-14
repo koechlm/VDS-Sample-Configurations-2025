@@ -68,22 +68,6 @@ function InitializeNumSchm()
             $Prop["_NumSchm"].Value = "None"
         }
     }
-	$numSchemsList=GetNumSchms
-    if($numSchemsList)
-    {
-        if($numSchemsList -is [Array])
-        {
-            $defaultNumSchem=$numSchemsList[0]
-        }
-        else
-        {
-            $defaultNumSchem=$numSchemsList
-        }
-        if($defaultNumSchem.IsDflt)
-        {    
-            $Prop["_NumSchm"].Value = $defaultNumSchem.Name
-        }
-    } 
 }
 
 function GetVaultRootFolder()

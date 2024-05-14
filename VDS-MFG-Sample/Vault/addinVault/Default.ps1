@@ -176,22 +176,6 @@ function InitializeNumSchm()
             }
         }		
     })
-	$numSchemsList=GetNumSchms
-    if($numSchemsList)
-    {
-        if($numSchemsList -is [Array])
-        {
-            $defaultNumSchem=$numSchemsList[0]
-        }
-        else
-        {
-            $defaultNumSchem=$numSchemsList
-        }
-        if($defaultNumSchem.IsDflt)
-        {    
-            $Prop["_NumSchm"].Value = $defaultNumSchem.Name
-        }
-    } 
 }
 
 function InitializeNameValidation()
