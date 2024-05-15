@@ -10,6 +10,7 @@ class itemData
 }
 
 function mInitializeItemSearch([STRING] $Context) {
+
 	if ($Prop["_Category"].Value -eq $UIString["Adsk.QS.ItemSearch_14"]) {
 		$Context = "Purchased"
 	}
@@ -368,6 +369,7 @@ function mGetItemMaterials {
 
 
 function mInitializeTabItemProps() {
+	#$dsDiag.Trace("Initialize Item Properties Tab")
 	$dsWindow.FindName("btnAssignedItemRefresh").Visibility = "Collapsed"
 	$dsWindow.FindName("txtAssignedItemStatus").Visibility = "Collapsed"
 	
@@ -384,6 +386,7 @@ function mInitializeTabItemProps() {
 
 
 function mGetItemByFileFromVault() {
+	#$dsDiag.Trace("Get Item by File from Vault")
 	#search for the file in Vault
 	$result = FindFile -fileName $Prop["_FileName"].Value
 	switch ($result.count) {
@@ -416,7 +419,7 @@ function mGetItemByFileFromVault() {
 					
 	#get local path of vault workspace path for Inventor
 	If ($dsWindow.Name -eq "InventorWindow") {
-		$mCAxRoot = $mappedRootPath.Split("/.")[1]
+		$mCAxRoot = $mappedRootPath.Split("/")[1]
 	}
 	if ($dsWindow.Name -eq "AutoCADWindow") {
 		$mCAxRoot = ""

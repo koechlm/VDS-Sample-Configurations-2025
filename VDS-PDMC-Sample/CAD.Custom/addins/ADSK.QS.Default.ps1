@@ -10,14 +10,27 @@
 # OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.  
 #=============================================================================
 
-function InitializeWindow {             
+function InitializeWindow {  
+
+	# $dsDiag.ShowLog()
+	# $dsDiag.Clear()
+	# #$dsDiag.Trace(">> Initialize window start <<")
+
+	#skip the dialog if the file is not saved yet and called in edit mode
+	if ($document.FileSaveCounter -eq 0 -and $Prop["_EditMode"].Value -eq $true) {
+		$dsWindow.add_Loaded({
+				$dsWindow.CancelWindowCommand.Execute($this)
+			})
+		#$dsDiag.Trace("Skip dialog as the file is not saved yet.")	
+		return
+	}
 
 	$dsWindow.Title = SetWindowTitle
 	$Global:mCategories = GetCategories
 
 	# leverage the current theme variable in theme dependent path names etc.
 	$Global:currentTheme = [Autodesk.DataManagement.Client.Framework.Forms.SkinUtils.WinFormsTheme]::Instance.CurrentTheme
-
+	
 	#Copy Parent Project Number to file property "Project Number" if exists; be careful, not all dialogs might have the textbox, e.g. DA, FG,...
 	If ($Prop["Project"]) {
 		$Global:mPropTrans = mGetPropTranslations
@@ -28,9 +41,6 @@ function InitializeWindow {
 				})
 		}
 	}
-
-	#$dsDiag.ShowLog()
-	#$dsDiag.Clear()
 
 	if ($Prop["_CopyMode"].Value -eq $true) { #disabled as it causes another read-only edit dialog on drawing copies
 		$_DataContext = $dsWindow.DataContext
@@ -115,7 +125,6 @@ function InitializeWindow {
 					}
 					InitializeInventorCategory
 					InitializeInventorNumSchm
-					#Initialize Shortcuts
 					mFillMyScTree
 
 					#set the active user as Inventor Designer
@@ -248,7 +257,7 @@ function InitializeWindow {
 								$Prop["Material"].Value = $Document.ComponentDefinition.WeldBeadMaterial.DisplayName
 							}
 							catch {
-								$dsDiag.Trace("Failed reading weld bead material; most likely the assembly subtype is not an weldment.")
+								#$dsDiag.Trace("Failed reading weld bead material; most likely the assembly subtype is not an weldment.")
 							}
 						}
 					}
@@ -392,6 +401,7 @@ function GetVaultRootFolder()
 }
 
 function SetWindowTitle {
+	#$dsDiag.Trace("SetWindowTitle")
 	$mWindowName = $dsWindow.Name
 	switch ($mWindowName) {
 		"InventorFrameWindow" {
@@ -453,6 +463,7 @@ function SetWindowTitle {
 }
 
 function InitializeInventorNumSchm {
+	#$dsDiag.Trace("InitializeInventorNumSchm")
 	if ($Prop["_SaveCopyAsMode"].Value -eq $true) {
 		$Prop["_NumSchm"].Value = $UIString["LBL77"]
 	}
@@ -465,6 +476,7 @@ function InitializeInventorNumSchm {
 }
 
 function InitializeInventorCategory {
+	#$dsDiag.Trace("InitializeInventorCategory")
 	$mDocType = $Document.DocumentType
 	$mDocSubType = $Document.SubType #differentiate part/sheet metal part and assembly/weldment assembly
 	switch ($mDocType) {
@@ -547,6 +559,7 @@ function InitializeInventorCategory {
 }
 
 function GetNumSchms {
+	#$dsDiag.Trace("GetNumSchms")
 	try {
 		if (-Not $Prop["_EditMode"].Value) {
 			#VDS-PDMC-Sample - there is the use case that we don't need a number: IDW/DWG, IPN and Option Generate new file number = off
@@ -573,19 +586,6 @@ function GetNumSchms {
 				if ($Prop["_NumSchm"].Value) { $Prop["_NumSchm"].Value = $_FilteredNumSchems[1].Name } # None 	
 			}
 
-			#reverse order for these cases; none is added latest; reverse the list, if None is pre-set to index = 0
-
-			#If($dsWindow.Name-eq "InventorWindow" -and $Prop["DocNumber"].Value -notlike "Assembly*" -and $Prop["_FileExt"].Value -eq ".iam") #you might find better criteria based on then numbering scheme
-			#{
-			#	$_FilteredNumSchems = $_FilteredNumSchems | Sort-Object -Descending
-			#	return $_FilteredNumSchems
-			#}
-			#If($dsWindow.Name-eq "InventorWindow" -and $Prop["DocNumber"].Value -notlike "Part*" -and $Prop["_FileExt"].Value -eq ".ipt") #you might find better criteria based on then numbering scheme
-			#{
-			#	$_FilteredNumSchems = $_FilteredNumSchems | Sort-Object -Descending
-			#	return $_FilteredNumSchems
-			#}
-
 			If ($dsWindow.Name -eq "InventorFrameWindow") { 
 				return $_Default
 			}
@@ -603,14 +603,21 @@ function GetNumSchms {
 		}
 	}
 	catch [System.Exception] {		
-		[Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowError($error, "VDS Sample Configuration")
+		[Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowError("Unhandled exception in GetNumSchms.", "VDS Sample Configuration")
 	}	
 }
 
 function GetCategories {
-	$mAllCats = $Prop["_Category"].ListValues #$vault.CategoryService.GetCategoriesByEntityClassId("FILE", $true)
-	$mFDSFilteredCats = $mAllCats | Where-Object { $_.Name -ne "Asset Library" }
-	return $mFDSFilteredCats | Sort-Object -Property "Name" #Ascending is default; no option required
+	#$dsDiag.Trace("GetCategories start >>")
+	try {
+		$mAllCats = $Prop["_Category"].ListValues
+		$mFDSFilteredCats = $mAllCats | Where-Object { $_.Name -ne "Asset Library" }
+		return $mFDSFilteredCats | Sort-Object -Property "Name"
+	}
+	catch {
+		[Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowError("Unhandled exception in GetCategories", "VDS Sample Configuration")
+		return $null
+	}
 }
 
 function OnPostCloseDialog {
@@ -661,6 +668,7 @@ function OnPostCloseDialog {
 }
 
 function mHelp ([Int] $mHContext) {
+	#$dsDiag.Trace("mHelp")
 	try {
 		switch ($mHContext) {
 			100 {
@@ -822,7 +830,7 @@ function mInitializeCHContext {
 
 #region Shortcuts
 function mFillMyScTree {
-
+	#$dsDiag.Trace("mFillMyScTree")
 	# Define a custom class to represent the tree nodes
 	class TreeNode {
 		[string]$Name
@@ -849,7 +857,7 @@ function mFillMyScTree {
 	$treeView = $dsWindow.FindName("ScTree")
 
 	# Create a treeRoot node for the treeView
-	$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\User_CO_16.png"
+	$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\User_CO_16.png"
 	$treeRoot = [TreeNode]::new("UserRoot", "")
 	$MyScRoot = [TreeNode]::New("My Shortcuts", $IconSource)
 
@@ -867,7 +875,7 @@ function mFillMyScTree {
 	$treeRoot.AddChild($MyScRoot)
 
 	# Get the tree for distributed shortcuts
-	$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\User_Admin_16.png"
+	$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\User_Admin_16.png"
 	$DstrbScRoot = [TreeNode]::new("Distributed Shortcuts", $IconSource)
 
 	#read the distributed shortcuts stored in the Vault
@@ -895,6 +903,7 @@ function mFillMyScTree {
 }
 
 function mAddTreeNode($XmlNode, $TreeLevel, $EnableDelete) {
+	#$dsDiag.Trace("mAddTreeNode")
 	if ($XmlNode.LocalName -eq "Shortcut") {
 		if (($XmlNode.NavigationContextType -eq "Connectivity.Explorer.Document.DocFolder") -and ($XmlNode.NavigationContext.URI -like "*"+$global:CAx_Root + "/*")) {
 			#add the shortcut to the dictionary for instant read on selection change
@@ -909,7 +918,7 @@ function mAddTreeNode($XmlNode, $TreeLevel, $EnableDelete) {
 		}
 	}
 	if ($XmlNode.LocalName -eq "ShortcutGroup") {
-		$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\FolderClosedMask_16.png"
+		$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\FolderClosedMask_16.png"
 		if ($XmlNode.HasChildNodes -eq $true) {
 			$NextLevel = [TreeNode]::new($XmlNode.Name, $IconSource)
 			$XmlNode.ChildNodes | ForEach-Object {
@@ -929,26 +938,26 @@ function mGetIconSource {
 	param (
 		$ImageMetaData
 	)
-
-	[string]$ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\Unknown_Sc_16x16.png"
+	#$dsDiag.Trace("mGetIconSource")
+	[string]$ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\Unknown_Sc_16x16.png"
 
 	if ($ImageMetaData -like "*.iam?*") {
-		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\IAM_Sc_16x16.png" 
+		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\IAM_Sc_16x16.png" 
 	}
 	if ($ImageMetaData -like'*.ipt?*') {
-		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\IPT_Sc_16x16.png"
+		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\IPT_Sc_16x16.png"
 	}
 	if ($ImageMetaData -like'*.ipn?*') {
-		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\IPN_Sc_16x16.png"
+		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\IPN_Sc_16x16.png"
 	}
 	if ($ImageMetaData -like "*.idw?*") {
-		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\IDW_Sc_16x16.png"
+		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\IDW_Sc_16x16.png"
 	}
 	if ($ImageMetaData -like'*.dwg?*') {
-		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\DWG_Sc_16x16.png"
+		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\DWG_Sc_16x16.png"
 	}
 	if ($ImageMetaData -like '*TAG=Folder*') {
-		$FolderTemplate = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\FolderScToRecolor_16.png"
+		$FolderTemplate = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\FolderScToRecolor_16.png"
 		#extract ARGB part of ImageMetaData
 		$ARGB = [Regex]::Matches($ImageMetaData, "\[A\=\d{1,3}, R\=\d{1,3}, G\=\d{1,3}, B\=\d{1,3}\]")[0].Value.TrimStart("[").TrimEnd(']')
 		#create string array for ARGB values
@@ -1007,6 +1016,7 @@ function mReplaceColor {
   }
 
 function mReadUserShortcuts {
+	#$dsDiag.Trace("mReadUserShortcuts")
 	$m_Server = ($VaultConnection.Server).Replace(":", "_").Replace("/", "_")
 	$m_Vault = $VaultConnection.Vault
 	$m_Path = "$($env:appdata)\Autodesk\VaultCommon\Servers\Services_Security_01_10_2024\$($m_Server)\Vaults\$($m_Vault)\Objects\"
@@ -1021,6 +1031,7 @@ function mReadUserShortcuts {
 
 
 function  mClickScTreeItem {
+	#$dsDiag.Trace("mClickScTreeItem")
 	try {
 		$_key = $dsWindow.FindName("ScTree").SelectedItem.Name
 		if ($Global:m_ScDict.ContainsKey($_key)) {
@@ -1042,22 +1053,26 @@ function  mClickScTreeItem {
 		}
 	}
 	catch {
-		$dsDiag.Trace("mClickScTreeItem function - error reading selected value")
+		#$dsDiag.Trace("mClickScTreeItem function - error reading selected value")
 	}
 	
 }
 
 function mAddSc {
+	#$dsDiag.Trace("mAddSc")
 	try {
 		$mNewScName = $dsWindow.FindName("txtNewShortCut").Text
 		mAddShortCutByName ($mNewScName)		
 		#rebuild the tree view to include the new shortcut
 		mFillMyScTree
 	}
-	catch {}
+	catch {
+		[Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowError("Unhandled exception in mAdd Shortcut.", "VDS MFG Sample Client")
+	}
 }
 
 function mRemoveSc {
+	#$dsDiag.Trace("mRemoveSc")
 	try {
 		$_key = $dsWindow.FindName("ScTree").SelectedItem.Name
 		if ($true -eq $dsWindow.FindName("ScTree").SelectedItem.DeleteEnabled) {
@@ -1066,11 +1081,13 @@ function mRemoveSc {
 			mFillMyScTree
 		}
 	}
-	catch { }
+	catch {
+		[Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowError("Unhandled exception in mRemove Shortcut.", "VDS MFG Sample Client")
+	 }
 }
 
-function mAddShortCutByName([STRING] $mScName)
-{
+function mAddShortCutByName([STRING] $mScName) {
+	#$dsDiag.Trace("mAddShortCutByName")
 	try #simply check that the name is unique
 	{
 		#$dsDiag.Trace(">> Start to add ShortCut, check for used name...")
@@ -1138,12 +1155,13 @@ function mAddShortCutByName([STRING] $mScName)
 	}
 	catch 
 	{
-		$dsDiag.Trace("..problem encountered adding ShortCut <<")
+		[Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowError("Unhandled exception in mAddShortCutByName.", "VDS MFG Sample Client")
 		return $false
 	}
 }
 
 function mRemoveShortCutByName ([STRING] $mScName) {
+	#$dsDiag.Trace("mRemoveShortCutByName")
 	try {
 		#catch all nodes; multiple shortcuts can be equally named
 		$mNodesToSelect = "//*[@Name='$($mScName)']"
@@ -1159,6 +1177,7 @@ function mRemoveShortCutByName ([STRING] $mScName) {
 		return $true
 	}
 	catch {
+		[Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowError("Unhandled exception in mRemoveShortCutByName.", "VDS MFG Sample Client")
 		return $false
 	}
 }
