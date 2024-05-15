@@ -89,12 +89,13 @@
   <PropertyTranslation Name="CUSTAPPRVDBY">Kundenseits genehmigt von</PropertyTranslation>
   <PropertyTranslation Name="CUSTAPPRVDDATE">Kundenseits genehmigt am</PropertyTranslation>
   <PropertyTranslation Name="DOCCHCKREQ">Dokumentprüfung erforderlich</PropertyTranslation>
-  <PropertyTranslation Name="ORIGINATOR">Originator</PropertyTranslation>
-  <PropertyTranslation Name="ORIGCREATEDATE">Original Create Date</PropertyTranslation>
-  <PropertyTranslation Name="INITIALAPPROVER">Initial Approver</PropertyTranslation>
-  <PropertyTranslation Name="INITRELEASEDATE">Initial Release Date</PropertyTranslation>
-  <PropertyTranslation Name="LATESTAPPROVER">Latest Approver</PropertyTranslation>
-  <PropertyTranslation Name="LATESTRELEASEDATE">Latest Released Date</PropertyTranslation>
+  <PropertyTranslation Name="ORIGINATOR">Autor</PropertyTranslation>
+  <PropertyTranslation Name="ORIGCREATEDATE">Ersterstellung</PropertyTranslation>
+  <PropertyTranslation Name="INITIALAPPROVER">Anfänglicher Genehmiger</PropertyTranslation>
+  <PropertyTranslation Name="INITRELEASEDATE">Erstveröffentlicht</PropertyTranslation>
+  <PropertyTranslation Name="LATESTAPPROVER">Letzer Genehmiger</PropertyTranslation>
+  <PropertyTranslation Name="LATESTRELEASEDATE">Letztes Freigabedatum</PropertyTranslation>
+  <PropertyTranslation Name="LATESTRELREVISION">Neueste freigegebene Revision</PropertyTranslation>
   <!--Revision Property Tab end-->
   
 </PropertyTranslations>
