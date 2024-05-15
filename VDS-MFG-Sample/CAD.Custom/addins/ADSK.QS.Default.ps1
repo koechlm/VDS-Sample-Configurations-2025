@@ -12,6 +12,10 @@
 
 function InitializeWindow {
 
+	# $dsDiag.ShowLog()
+	# $dsDiag.Clear()
+	# #$dsDiag.Trace(">> Initialize window start <<")
+
 	$dsWindow.Title = SetWindowTitle
 	$Global:mCategories = GetCategories
 
@@ -207,7 +211,7 @@ function InitializeWindow {
 				}
 				$false { 
 					# EditMode = True
-					if ((Get-Item $document.FullFileName).IsReadOnly) {
+					if ($document.FullFileName -and (Get-Item $document.FullFileName).IsReadOnly) {
 						#disable the OK button
 						$dsWindow.FindName("btnOK").IsEnabled = $false
 					}
@@ -370,11 +374,11 @@ function SetWindowTitle {
 			}
 			else {
 				$windowTitle = "$($UIString["LBL25"]) - $($Prop["_FileName"].Value)"
-			}
-			if ($Prop["_EditMode"].Value -and (Get-Item $document.FullFileName).IsReadOnly) {
+			}			
+			if ($document.FullFileName -and $Prop["_EditMode"].Value -and (Get-Item $document.FullFileName).IsReadOnly) {
 				$windowTitle = "$($UIString["LBL25"]) - $($Prop["_FileName"].Value) - $($UIString["LBL26"])"
 				$dsWindow.FindName("btnOK").ToolTip = $UIString["LBL26"]
-			}
+			}			
 		}
 		"AutoCADWindow" {
 			if ($Prop["_CreateMode"].Value) {
@@ -781,7 +785,7 @@ function mFillMyScTree {
 	$treeView = $dsWindow.FindName("ScTree")
 
 	# Create a treeRoot node for the treeView
-	$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\User_CO_16.png"
+	$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\User_CO_16.png"
 	$treeRoot = [TreeNode]::new("UserRoot", "")
 	$MyScRoot = [TreeNode]::New("My Shortcuts", $IconSource)
 
@@ -799,7 +803,7 @@ function mFillMyScTree {
 	$treeRoot.AddChild($MyScRoot)
 
 	# Get the tree for distributed shortcuts
-	$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\User_Admin_16.png"
+	$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\User_Admin_16.png"
 	$DstrbScRoot = [TreeNode]::new("Distributed Shortcuts", $IconSource)
 
 	#read the distributed shortcuts stored in the Vault
@@ -841,7 +845,7 @@ function mAddTreeNode($XmlNode, $TreeLevel, $EnableDelete) {
 		}
 	}
 	if ($XmlNode.LocalName -eq "ShortcutGroup") {
-		$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\FolderClosedMask_16.png"
+		$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\FolderClosedMask_16.png"
 		if ($XmlNode.HasChildNodes -eq $true) {
 			$NextLevel = [TreeNode]::new($XmlNode.Name, $IconSource)
 			$XmlNode.ChildNodes | ForEach-Object {
@@ -862,25 +866,25 @@ function mGetIconSource {
 		$ImageMetaData
 	)
 
-	[string]$ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\Unknown_Sc_16x16.png"
+	[string]$ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\Unknown_Sc_16x16.png"
 
 	if ($ImageMetaData -like "*.iam?*") {
-		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\IAM_Sc_16x16.png" 
+		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\IAM_Sc_16x16.png" 
 	}
 	if ($ImageMetaData -like'*.ipt?*') {
-		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\IPT_Sc_16x16.png"
+		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\IPT_Sc_16x16.png"
 	}
 	if ($ImageMetaData -like'*.ipn?*') {
-		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\IPN_Sc_16x16.png"
+		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\IPN_Sc_16x16.png"
 	}
 	if ($ImageMetaData -like "*.idw?*") {
-		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\IDW_Sc_16x16.png"
+		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\IDW_Sc_16x16.png"
 	}
 	if ($ImageMetaData -like'*.dwg?*') {
-		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\DWG_Sc_16x16.png"
+		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\DWG_Sc_16x16.png"
 	}
 	if ($ImageMetaData -like '*TAG=Folder*') {
-		$FolderTemplate = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\FolderScToRecolor_16.png"
+		$FolderTemplate = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\FolderScToRecolor_16.png"
 		#extract ARGB part of ImageMetaData
 		$ARGB = [Regex]::Matches($ImageMetaData, "\[A\=\d{1,3}, R\=\d{1,3}, G\=\d{1,3}, B\=\d{1,3}\]")[0].Value.TrimStart("[").TrimEnd(']')
 		#create string array for ARGB values

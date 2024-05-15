@@ -16,15 +16,6 @@ function InitializeWindow {
 	# $dsDiag.Clear()
 	# #$dsDiag.Trace(">> Initialize window start <<")
 
-	#skip the dialog if the file is not saved yet and called in edit mode
-	if ($document.FileSaveCounter -eq 0 -and $Prop["_EditMode"].Value -eq $true) {
-		$dsWindow.add_Loaded({
-				$dsWindow.CancelWindowCommand.Execute($this)
-			})
-		#$dsDiag.Trace("Skip dialog as the file is not saved yet.")	
-		return
-	}
-
 	$dsWindow.Title = SetWindowTitle
 	$Global:mCategories = GetCategories
 
@@ -245,7 +236,7 @@ function InitializeWindow {
 				}
 				$false { 
 					# EditMode = True
-					if ((Get-Item $document.FullFileName).IsReadOnly) {
+					if ($document.FullFileName -and (Get-Item $document.FullFileName).IsReadOnly) {
 						#disable the OK button
 						$dsWindow.FindName("btnOK").IsEnabled = $false
 					}
@@ -431,10 +422,10 @@ function SetWindowTitle {
 			else {
 				$windowTitle = "$($UIString["LBL25"]) - $($Prop["_FileName"].Value)"
 			}
-			if ($Prop["_EditMode"].Value -and (Get-Item $document.FullFileName).IsReadOnly) {
+			if ($document.FullFileName -and $Prop["_EditMode"].Value -and (Get-Item $document.FullFileName).IsReadOnly) {
 				$windowTitle = "$($UIString["LBL25"]) - $($Prop["_FileName"].Value) - $($UIString["LBL26"])"
 				$dsWindow.FindName("btnOK").ToolTip = $UIString["LBL26"]
-			}
+			}	
 		}
 		"AutoCADWindow" {
 			if ($Prop["_CreateMode"].Value) {
