@@ -7,7 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
     Style="{DynamicResource ThemedWindowStyle}"
-    x:Name="InventorWindow" ResizeMode="NoResize" SizeToContent="WidthAndHeight" >
+    x:Name="InventorWindow" ResizeMode="NoResize" SizeToContent="WidthAndHeight" Title="{Binding UIString[LBL72], FallbackValue='Save As...'}" >
     <WPF:DSWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -116,8 +116,9 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate>
-                                    <ComboBox ItemsSource="{Binding ListValues}" Text="{WPF:ValidatedBinding Value}"
-                                  IsEditable="False" BorderThickness="0" IsHitTestVisible="False"  ToolTipService.ShowOnDisabled="True" ToolTip="Weldment Material derives from weld bead material setting."/>
+                                    <TextBox Text="{WPF:ValidatedBinding Value}" BorderThickness="0" 
+                                    ToolTip="{Binding DataContext.UIString[LBL27], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, FallbackValue='[Assigned]'}" 
+                                    IsReadOnly="True" IsTabStop="False"/>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
@@ -142,7 +143,7 @@
             <Style x:Key="DynamicDataGridBtnCellStyle" TargetType="{x:Type DataGridCell}">
                 <Setter Property="KeyboardNavigation.IsTabStop" Value="False" />
                 <Setter Property="IsHitTestVisible" Value="False" />
-                <Setter Property="Width" Value="Auto"/>
+                <Setter Property="Width" Value="0"/>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Name}" Value="MyPropName">
                         <Setter Property="IsHitTestVisible" Value="True" />
@@ -357,8 +358,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <GroupBox x:Name="GroupFolder" Grid.ColumnSpan="2" Margin="-7,0,0,5" BorderThickness="0" Header="{Binding UIString[LBL1], FallbackValue=Folder}" MaxWidth="700"
@@ -440,39 +440,39 @@
                     MinHeight="80" MaxWidth="700" Margin="0,10,0,0" >
             <TabItem x:Name="tabProperties" Header="{Binding UIString[LBL63], FallbackValue= 'Category Properties'}">
                 <AdornerDecorator>
-                    <DataGrid x:Name="DSDynamicCategoryProperties"
+                    <Grid x:Name="DSDynCatPropGrid" MinHeight="80" MinWidth="694">
+                        <DataGrid x:Name="DSDynamicCategoryProperties"
             			AutoGenerateColumns="False"
             			HeadersVisibility="Column"
             			ItemsSource="{Binding DynamicProperties}"
             			ScrollViewer.CanContentScroll="False"
                         IsReadOnly="True"
                         EnableRowVirtualization="False"
-                        VerticalAlignment="Top"  MinHeight="260" MaxHeight="350" CanUserReorderColumns="False" Margin="0,10,0,0" >
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Binding="{Binding DispName}" CellStyle="{StaticResource DynamicDataGridLabelStyle}" Width="*" IsReadOnly="True">
-                                <DataGridTextColumn.HeaderTemplate>
-                                    <DataTemplate>
-                                        <TextBlock
+                        VerticalAlignment="Top"  MinHeight="260" MaxHeight="350" >
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding DispName}"
+                                    CellStyle="{StaticResource DynamicDataGridLabelStyle}" Width="*" IsReadOnly="True">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
             								Text="{Binding DataContext.UIString[LBL64], FallbackValue=Name, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" Height="22" FontWeight="Bold" />
-                                    </DataTemplate>
-                                </DataGridTextColumn.HeaderTemplate>
-                            </DataGridTextColumn>
-                            <DataGridTemplateColumn Header="Property Value" CellStyle="{StaticResource DynamicDataGridCellStyle}" MinWidth="300" Width="2*">
-                                <DataGridTemplateColumn.HeaderTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding DataContext.UIString[LBL65], FallbackValue=Value, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" Height="22" FontWeight="Bold" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.HeaderTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn  Header="Options" CellStyle="{StaticResource DynamicDataGridBtnCellStyle}">
-                                <DataGridTemplateColumn.HeaderTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding DataContext.UIString[], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" FontWeight="Bold"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.HeaderTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                                        </DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTemplateColumn Header="Property Value"
+            					CellStyle="{StaticResource DynamicDataGridCellStyle}" MinWidth="300" Width="2*">
+                                    <DataGridTemplateColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+            								Text="{Binding DataContext.UIString[LBL65], FallbackValue=Value, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" Height="22" FontWeight="Bold" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.HeaderTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn CellStyle="{StaticResource DynamicDataGridBtnCellStyle}" MinWidth="25" >
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
                 </AdornerDecorator>
             </TabItem>
         </TabControl>
@@ -578,5 +578,6 @@
                 </Grid>
             </GroupBox>
         </Grid>
+
     </Grid>
 </WPF:DSWindow>

@@ -1,18 +1,22 @@
-﻿
-Add-Type @'
-public class myBom
+﻿# DISCLAIMER:
+# ---------------------------------
+# In any case, code, templates, and snippets of this solution are of "work in progress" character.
+# Neither Markus Koechl, nor Autodesk represents that these samples are reliable, accurate, complete, or otherwise valid. 
+# Accordingly, those configuration samples are provided as is with no warranty of any kind, and you use the applications at your own risk.
+
+
+class myBom
 {
-	public string Position;
-	public string PartNumber;
-	public string ComponentType;
-	public float Quantity;
-	public string Name;
-	public byte[] Thumbnail;
-	public string Title;
-	public string Description;
-	public string Material;
+	[string] $Position
+	[string] $PartNumber
+	[string] $ComponentType
+	[float] $Quantity
+	[string] $Name
+	[byte[]] $Thumbnail
+	[string] $Title
+	[string] $Description
+	[string] $Material
 }
-'@
 
 function GetFileBOM($fileID)
 {

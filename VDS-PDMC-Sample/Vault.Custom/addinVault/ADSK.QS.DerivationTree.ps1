@@ -1,29 +1,22 @@
-#region disclaimer
-#=============================================================================
-# PowerShell script sample for Vault Data Standard
-#
-# Copyright (c) Autodesk - All rights reserved.
-# 
-# THIS SCRIPT/CODE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-# EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
-#=============================================================================
-#endregion
+# DISCLAIMER:
+# ---------------------------------
+# In any case, code, templates, and snippets of this solution are of "work in progress" character.
+# Neither Markus Koechl, nor Autodesk represents that these samples are reliable, accurate, complete, or otherwise valid. 
+# Accordingly, those configuration samples are provided as is with no warranty of any kind, and you use the applications at your own risk.
 
-Add-Type @'
-public class mClsDerivate
+
+class mClsDerivate
 {
-	public byte[] Thumbnail;
-	public string Name;
-	public string Title;
-	public string Description;
-	public string State;
-	public string CreateDate;
-	public bool LReleasedRev;
-	public bool LVer;
-	public string Comment;
+	 [byte[]] $Thumbnail
+	 [string] $Name
+	 [string] $Title
+	 [string] $Description
+	 [string] $State
+	 [string] $CreateDate
+	 [bool] $LReleasedRev
+	 [bool] $LVer
+	 [string] $Comment
 }
-'@
 
 function mDerivationTreeUpdateView($fileMasterId)
 {
