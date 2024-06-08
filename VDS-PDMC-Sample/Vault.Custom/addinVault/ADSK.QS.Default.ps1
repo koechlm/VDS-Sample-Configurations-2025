@@ -586,9 +586,9 @@ function OnTabContextChanged
 	#region Documentstructure Extension
 		if ($VaultContext.SelectedObject.TypeId.SelectionContext -eq "FileMaster" -and $xamlFile -eq "ADSK.QS.FileDocStructure.xaml")
 		{
-			Add-Type -Path 'C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\addinVault\UsesWhereUsed.dll'
+			Add-Type -Path 'C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\addinVault\VdsSampleUtilities.dll'
 			$file = $vault.DocumentService.GetLatestFileByMasterId($vaultContext.SelectedObject.Id)
-			$treeNode = New-Object UsesWhereUsed.TreeNode($file, $vaultConnection)
+			$treeNode = New-Object VdsSampleUtilities.TreeNode($file, $vaultConnection)
 			$dsWindow.FindName("Uses").ItemsSource = @($treeNode)
 
 			$dsWindow.FindName("Uses").add_SelectedItemChanged({
