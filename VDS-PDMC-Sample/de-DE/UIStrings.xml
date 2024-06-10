@@ -195,6 +195,7 @@
   <UIString ID="G_W">Breite (Fx G_W)</UIString>
   <UIString ID="G_H">Höhe, Durchmesser (Fx G_H)</UIString>
   <UIString ID="G_T">Stärke (Fx G_T)</UIString>
+  <UIString ID="G_A">Fläche (Fx G_A)</UIString>
   <UIString ID="G_D">Abmessungen (Fx G_D)</UIString>
   <UIString ID="Dimensions">Abmessungen (Fx G_D)</UIString>
   <UIString ID="CUTDETAIL1">Zuschnitt Detail 1</UIString>

@@ -193,7 +193,7 @@
     <DynamicProperty>Spare-Wear Part</DynamicProperty>
     <DynamicProperty>Stock Number</DynamicProperty>
     <DynamicProperty>Stock Description</DynamicProperty>
-    <DynamicProperty>Stock Qty</DynamicProperty>    
+    <DynamicProperty>Stock Qty</DynamicProperty>
     <DynamicProperty>Mass</DynamicProperty>
     <DynamicProperty>Bounding Size</DynamicProperty>
     <DynamicProperty>Length (Fx)</DynamicProperty>
@@ -397,27 +397,27 @@
     <DynamicProperty Hidden="True">Application Version</DynamicProperty>
   </DynamicPropertiesCategory>
   <DynamicPropertiesCategory Category="Managed Asset" Type="File">
-    <DynamicProperty>Author</DynamicProperty>
-    <DynamicProperty>AKN Date Removed</DynamicProperty>
-    <DynamicProperty>A-Drive Date Removed</DynamicProperty>
-    <DynamicProperty>A-Drive Date Published</DynamicProperty>
-    <DynamicProperty>Channel Tech Date Removed</DynamicProperty>
-    <DynamicProperty>A-Drive Link</DynamicProperty>
-    <DynamicProperty>OTS Link</DynamicProperty>
-    <DynamicProperty>Comments</DynamicProperty>
-    <DynamicProperty>VStudio GitHub</DynamicProperty>
-    <DynamicProperty>Thin Client Link</DynamicProperty>
-    <DynamicProperty>VStudio Project</DynamicProperty>
-    <DynamicProperty>AKN Date Published</DynamicProperty>
-    <DynamicProperty>Channel Tech Date Published</DynamicProperty>
-    <DynamicProperty>OTS Date Published</DynamicProperty>
-    <DynamicProperty>OTS Date Expiration</DynamicProperty>
-    <DynamicProperty>Channel Tech Link</DynamicProperty>
     <DynamicProperty>Title</DynamicProperty>
     <DynamicProperty>Subject</DynamicProperty>
     <DynamicProperty>Keywords</DynamicProperty>
+    <DynamicProperty>Author</DynamicProperty>
+    <DynamicProperty>AKN Date Published</DynamicProperty>
     <DynamicProperty>AKN Link</DynamicProperty>
+    <DynamicProperty>AKN Date Removed</DynamicProperty>
+    <DynamicProperty>A-Drive Date Published</DynamicProperty>
+    <DynamicProperty>A-Drive Link</DynamicProperty>
+    <DynamicProperty>A-Drive Date Removed</DynamicProperty>    
+    <DynamicProperty>Channel Tech Date Published</DynamicProperty>
+    <DynamicProperty>Channel Tech Link</DynamicProperty>
+    <DynamicProperty>Channel Tech Date Removed</DynamicProperty>
     <DynamicProperty>OTS File Name</DynamicProperty>
+    <DynamicProperty>OTS Link</DynamicProperty>
+    <DynamicProperty>OTS Date Published</DynamicProperty>
+    <DynamicProperty>OTS Date Expiration</DynamicProperty>
+    <DynamicProperty>Comments</DynamicProperty>
+    <DynamicProperty>VStudio GitHub</DynamicProperty>
+    <DynamicProperty>VStudio Project</DynamicProperty>
+    <DynamicProperty>Thin Client Link</DynamicProperty>
   </DynamicPropertiesCategory>
   <DynamicPropertiesCategory Category="Plant" Type="Folder">
     <DynamicProperty>Title</DynamicProperty>
@@ -440,6 +440,10 @@
     <DynamicProperty>Segment</DynamicProperty>
     <DynamicProperty>Main Group</DynamicProperty>
     <DynamicProperty>Group</DynamicProperty>
+    <DynamicProperty>Standard</DynamicProperty>
+    <DynamicProperty>Code</DynamicProperty>
+    <DynamicProperty>Comments</DynamicProperty>
+    <DynamicProperty>Comments DE</DynamicProperty>
   </DynamicPropertiesCategory>
   <DynamicPropertiesCategory Category="Term" Type="CustomObject">
     <DynamicProperty>Segment</DynamicProperty>
@@ -454,10 +458,19 @@
   </DynamicPropertiesCategory>
   <DynamicPropertiesCategory Category="Main Group" Type="CustomObject">
     <DynamicProperty>Segment</DynamicProperty>
+    <DynamicProperty>Standard</DynamicProperty>
+    <DynamicProperty>Code</DynamicProperty>
+    <DynamicProperty>Comments</DynamicProperty>
+    <DynamicProperty>Comments DE</DynamicProperty>
   </DynamicPropertiesCategory>
   <DynamicPropertiesCategory Category="Group" Type="CustomObject">
     <DynamicProperty>Segment</DynamicProperty>
     <DynamicProperty>Main Group</DynamicProperty>
+    <DynamicProperty>Term DE</DynamicProperty>
+    <DynamicProperty>Standard</DynamicProperty>
+    <DynamicProperty>Code</DynamicProperty>
+    <DynamicProperty>Comments</DynamicProperty>
+    <DynamicProperty>Comments DE</DynamicProperty>
   </DynamicPropertiesCategory>
   <DynamicPropertiesCategory Category="Presentation" Type="File">
     <DynamicProperty>Title</DynamicProperty>

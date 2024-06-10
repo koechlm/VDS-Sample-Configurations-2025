@@ -197,6 +197,7 @@
   <UIString ID="G_H">Height, Diameter (Fx G_H)</UIString>
   <UIString ID="G_T">Thickness (Fx G_T)</UIString>
   <UIString ID="G_D">Bounding Size (Fx G_D)</UIString>
+  <UIString ID="G_A">Area (Fx G_A)</UIString>  
   <UIString ID="Dimensions">Bounding Size (Fx G_D)</UIString>
   <UIString ID="CUTDETAIL1">Cut Detail 1</UIString>
   <UIString ID="CUTDETAIL2">Cut Detail 2</UIString>
