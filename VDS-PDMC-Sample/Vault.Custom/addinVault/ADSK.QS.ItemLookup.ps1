@@ -1,16 +1,20 @@
+# DISCLAIMER:
+# ---------------------------------
+# In any case, code, templates, and snippets of this solution are of "work in progress" character.
+# Neither Markus Koechl, nor Autodesk represents that these samples are reliable, accurate, complete, or otherwise valid. 
+# Accordingly, those configuration samples are provided as is with no warranty of any kind, and you use the applications at your own risk.
 
-Add-Type @"
-public class itemData
+
+class itemData
 {
-	public string Item {get;set;}
-	public string Revision {get;set;}
-	public string Title {get;set;}
-	public string Material {get;set;}
-	public string Category {get;set;}
-	public string Description {get;set;}
-	public string StockNumber {get;set;}
+	[string] $Item
+	[string] $Revision
+	[string] $Title
+	[string] $Material
+	[string] $Category
+	[string] $Description
+	[string] $StockNumber
 }
-"@
 
 function mInitializeItemSearch([STRING] $Context)
 {

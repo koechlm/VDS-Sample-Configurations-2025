@@ -1,31 +1,25 @@
-#region disclaimer
-#=============================================================================
-# PowerShell script sample for Vault Data Standard                            
-#                                                                             
-# Copyright (c) Autodesk - All rights reserved.                               
-#                                                                             
-# THIS SCRIPT/CODE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER   
-# EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.  
-#=============================================================================
-#endregion
+# DISCLAIMER:
+# ---------------------------------
+# In any case, code, templates, and snippets of this solution are of "work in progress" character.
+# Neither Markus Koechl, nor Autodesk represents that these samples are reliable, accurate, complete, or otherwise valid. 
+# Accordingly, those configuration samples are provided as is with no warranty of any kind, and you use the applications at your own risk.
 
-Add-Type @'
-public class mAssocCustent
+
+class mAssocCustent
 {
-	public string id;
-	public string icon;
-	public string name;
-	public string title;
-	public string description;
-	public string owner;
-	public string datestart;
-	public string state;
-	public string priority;
-	public string dateend;
-	public string comments;
+	 [string] $id
+	 [string] $icon
+	 [string] $name
+	 [string] $title
+	 [string] $description
+	 [string] $owner
+	 [string] $datestart
+	 [string] $state
+	 [string] $priority
+	 [string] $dateend
+	 [string] $comments
 }
-'@
+
 
 function mGetAssocCustents($mIds)
 {

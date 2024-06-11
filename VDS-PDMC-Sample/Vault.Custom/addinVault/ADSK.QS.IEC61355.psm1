@@ -1,29 +1,22 @@
-#region disclaimer
-	#===============================================================================
-	# PowerShell script sample														
-	# Author: Markus Koechl														
-	# Copyright (c) Autodesk 2021												
-	#																				
-	# THIS SCRIPT/CODE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER     
-	# EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES   
-	# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.   
-	#===============================================================================
-#endregion
+# DISCLAIMER:
+# ---------------------------------
+# In any case, code, templates, and snippets of this solution are of "work in progress" character.
+# Neither Markus Koechl, nor Autodesk represents that these samples are reliable, accurate, complete, or otherwise valid. 
+# Accordingly, those configuration samples are provided as is with no warranty of any kind, and you use the applications at your own risk.
 
-Add-Type @"
-public class IEC61355Data
+
+class IEC61355Data
 {
-	public string Id {get;set;}
-	public string SubClass {get;set;}
-	public string Example {get;set;}
-	public string Code {get;set;}
-	public string SubClassDE {get;set;}
-	public string ExampleDE {get;set;}
-	public string Favorite {get;set;}
-	public string Path {get;set;}
-	public string PathCode {get;set;}
+	 [string] $Id
+	 [string] $SubClass
+	 [string] $Example
+	 [string] $Code
+	 [string] $SubClassDE
+	 [string] $ExampleDE
+	 [string] $Favorite
+	 [string] $Path
+	 [string] $PathCode
 }
-"@
 
 function mInitializeIEC61355
 {            
