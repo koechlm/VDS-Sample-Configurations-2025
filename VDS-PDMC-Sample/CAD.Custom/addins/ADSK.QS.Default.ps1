@@ -373,9 +373,9 @@ function InitializeWindow {
 
 function AddinLoaded {
 	#activate or create the user's VDS profile
-	$m_File = "$($env:appdata)\Autodesk\DataStandard 2025\Folder2024.xml"
+	$m_File = "$($env:appdata)\Autodesk\DataStandard 2025\Folder2025.xml"
 	if (!(Test-Path $m_File)) {
-		$source = "$($env:ProgramData)\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Folder2024.xml"
+		$source = "$($env:ProgramData)\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Folder2025.xml"
 		Copy-Item $source $m_File
 	}
 }
@@ -858,7 +858,7 @@ function mFillMyScTree {
 	$treeView = $dsWindow.FindName("ScTree")
 
 	# Create a treeRoot node for the treeView
-	$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\User_CO_16.png"
+	$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\User_CO_16.png"
 	$treeRoot = [TreeNode]::new("UserRoot", "")
 	$MyScRoot = [TreeNode]::New("My Shortcuts", $IconSource)
 
@@ -876,7 +876,7 @@ function mFillMyScTree {
 	$treeRoot.AddChild($MyScRoot)
 
 	# Get the tree for distributed shortcuts
-	$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\User_Admin_16.png"
+	$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\User_Admin_16.png"
 	$DstrbScRoot = [TreeNode]::new("Distributed Shortcuts", $IconSource)
 
 	#read the distributed shortcuts stored in the Vault
@@ -918,7 +918,7 @@ function mAddTreeNode($XmlNode, $TreeLevel, $EnableDelete) {
 		}
 	}
 	if ($XmlNode.LocalName -eq "ShortcutGroup") {
-		$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\FolderClosedMask_16.png"
+		$IconSource = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\FolderClosedMask_16.png"
 		if ($XmlNode.HasChildNodes -eq $true) {
 			$NextLevel = [TreeNode]::new($XmlNode.Name, $IconSource)
 			$XmlNode.ChildNodes | ForEach-Object {
@@ -939,25 +939,25 @@ function mGetIconSource {
 		$ImageMetaData
 	)
 
-	[string]$ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\Unknown_Sc_16x16.png"
+	[string]$ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\Unknown_Sc_16x16.png"
 
 	if ($ImageMetaData -like "*.iam?*") {
-		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\IAM_Sc_16x16.png" 
+		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\IAM_Sc_16x16.png" 
 	}
 	if ($ImageMetaData -like '*.ipt?*') {
-		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\IPT_Sc_16x16.png"
+		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\IPT_Sc_16x16.png"
 	}
 	if ($ImageMetaData -like '*.ipn?*') {
-		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\IPN_Sc_16x16.png"
+		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\IPN_Sc_16x16.png"
 	}
 	if ($ImageMetaData -like "*.idw?*") {
-		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\IDW_Sc_16x16.png"
+		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\IDW_Sc_16x16.png"
 	}
 	if ($ImageMetaData -like '*.dwg?*') {
-		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\DWG_Sc_16x16.png"
+		return $ImagePath = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\DWG_Sc_16x16.png"
 	}
 	if ($ImageMetaData -like '*TAG=Folder*') {
-		$FolderTemplate = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons" + $Global:currentTheme + "\FolderScToRecolor_16.png"
+		$FolderTemplate = "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault.Custom\Icons$($currentTheme)\FolderScToRecolor_16.png"
 		#extract ARGB part of ImageMetaData
 		$ARGB = [Regex]::Matches($ImageMetaData, "\[A\=\d{1,3}, R\=\d{1,3}, G\=\d{1,3}, B\=\d{1,3}\]")[0].Value.TrimStart("[").TrimEnd(']')
 		#create string array for ARGB values
@@ -1018,7 +1018,7 @@ function mReplaceColor {
 function mReadUserShortcuts {
 	$m_Server = ($VaultConnection.Server).Replace(":", "_").Replace("/", "_")
 	$m_Vault = $VaultConnection.Vault
-	$m_Path = "$($env:appdata)\Autodesk\VaultCommon\Servers\Services_Security_01_10_2023\$($m_Server)\Vaults\$($m_Vault)\Objects\"
+	$m_Path = "$($env:appdata)\Autodesk\VaultCommon\Servers\Services_Security_01_10_2024\$($m_Server)\Vaults\$($m_Vault)\Objects\"
 	$global:mScFile = $m_Path + "Shortcuts.xml"
 	if (Test-Path $global:mScFile) {
 		#$dsDiag.Trace(">> Start reading Shortcuts...")
@@ -1092,10 +1092,10 @@ function mAddShortCutByName([STRING] $mScName) {
 	try {
 		#$dsDiag.Trace(">> Continue to add ShortCut, creating new from template...")	
 		#read from template
-		$m_File = "$($env:appdata)\Autodesk\DataStandard 2025\Folder2024.xml"
+		$m_File = "$($env:appdata)\Autodesk\DataStandard 2025\Folder2025.xml"
 
 		if (Test-Path $m_File) {
-			#$dsDiag.Trace(">>-- Started to read Folder2024.xml...")
+			#$dsDiag.Trace(">>-- Started to read Folder2025.xml...")
 			$global:m_XML = New-Object XML
 			$global:m_XML.Load($m_File)
 		}
@@ -1127,7 +1127,7 @@ function mAddShortCutByName([STRING] $mScName) {
 		#replace the ARGB colors in the template
 		$mImageNode = $mNewSc.ImageMetaData
 		$regex = '\[A=(\d+), R=(\d+), G=(\d+), B=(\d+)\]'
-		$mImageNode = $mImageNode -replace $regex, "[A=$mFldrColor.A, R=$mFldrColor.R, G=$mFldrColor.G, B=$mFldrColor.B]"
+		$mImageNode = $mImageNode -replace $regex, "[A=$($mFldrColor.A), R=$($mFldrColor.R), G=$($mFldrColor.G), B=$($mFldrColor.B)]$($currentTheme)"
 		$mNewSc.ImageMetaData = $mImageNode
 
 		#append the new shortcut and save back to file
