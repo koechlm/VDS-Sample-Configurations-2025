@@ -10,7 +10,7 @@
       </LastUsedFolderAcad>
     </Vault>    
   </Vaults>
-  <Shortcut Name="Template" IsDistributed="false" IsShown="true" Id="IdTemplate">
+  <Shortcut Name="Template">
     <NavigationContext URI="vaultfolderpath:$/CADRoot/ProjectFolder/SubFolder1/SubFolder2" />
     <NavigationContextType>Connectivity.Explorer.Document.DocFolder</NavigationContextType>
     <ImageMetaData>TAG=FolderColor [A=255, R=255, G=255, B=255],DATA=iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAACxAAAAsQAa0jvXUAAACPSURBVDhPpdPBCoMwDIDhvpYnr3usPuZAYco2RMpWqTjFCrFBKEtJGXGHr4em/Je2CgD+wm5KqKK86AA46WEOBsAOjpUGEzoGrlXLwtnqPQtnMZDj/caGEc5jAA9y6tsjiwSaeydGAs/OiJFAb95iJPCyTowE3DiJkcBnXsRIYA1XJvUdyP6FH46njMt5oHY4CRnCj5qtlAAAAABJRU5ErkJggg==</ImageMetaData>
