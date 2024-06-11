@@ -1026,7 +1026,9 @@ function mAddShortCutByName([STRING] $mScName)
 		#clone the template completely and update name attribute and navigationcontext element
 		$mNewSc = $mShortCut.Clone() #.CloneNode($true)
 		#rename "Template" to new name
-		$mNewSc.Name = $mScName 
+		$mNewSc.Name = $mScName
+		#provide a unique ID
+		$mNewSc.Id = [System.Guid]::NewGuid().ToString();
 
 		#derive the path from current selection
 		$breadCrumb = $dsWindow.FindName("BreadCrumb")
