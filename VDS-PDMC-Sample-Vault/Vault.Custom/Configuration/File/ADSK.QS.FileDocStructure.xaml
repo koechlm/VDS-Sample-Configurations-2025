@@ -102,6 +102,7 @@
             <Style TargetType="{x:Type ListBox}" BasedOn="{StaticResource ThemedListBoxStyle }" />
             <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource ThemedListBoxItemStyle}"/>
             <Style TargetType="{x:Type TreeView}" BasedOn="{StaticResource ThemedTreeViewStyle}"/>
+            <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource ThemedTreeViewItemStyle}"/>
             <Style TargetType="{x:Type Border}" BasedOn="{StaticResource ThemedBorderStyle}"/>
             <!--#endregion themed styles for VE datasheet standard controls-->
         </ResourceDictionary>
@@ -119,7 +120,7 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="1">
             <TreeView x:Name="Uses"  >
                 <TreeView.ItemContainerStyle>
-                    <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource ThemedBaseControlStyle}">
+                    <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource ThemedTreeViewItemStyle}">
                         <Setter Property="IsExpanded" Value="False"/>
                     </Style>
                 </TreeView.ItemContainerStyle>
@@ -141,7 +142,7 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Column="1" Grid.Row="1">
             <TreeView x:Name="WhereUsed" ItemsSource="{Binding SelectedItem.Parents, ElementName=Uses, Mode=OneWay}" Focusable="False" SelectedValuePath="Name" >
                 <TreeView.ItemContainerStyle>
-                    <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource ThemedBaseControlStyle}">
+                    <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource ThemedTreeViewItemStyle}">
                         <Setter Property="IsExpanded" Value="False"/>
                     </Style>
                 </TreeView.ItemContainerStyle>

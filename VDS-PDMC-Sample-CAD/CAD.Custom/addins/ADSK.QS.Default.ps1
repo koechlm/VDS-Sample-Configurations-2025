@@ -12,9 +12,6 @@ function InitializeWindow {
 
 	$dsWindow.Title = SetWindowTitle
 	$Global:mCategories = GetCategories
-	if ($document.FileSaveCounter -ne 0) {
-		$Global:mReadOnly = (Get-Item $document.FullFileName).IsReadOnly
-	}
 
 	# leverage the current theme variable in theme dependent path names etc.
 	$Global:currentTheme = [Autodesk.DataManagement.Client.Framework.Forms.SkinUtils.WinFormsTheme]::Instance.CurrentTheme
@@ -51,6 +48,10 @@ function InitializeWindow {
 
 	switch ($mWindowName) {
 		"InventorWindow" {
+
+			if ($document.FileSaveCounter -ne 0) {
+				$Global:mReadOnly = (Get-Item $document.FullFileName).IsReadOnly
+			}
 
 			#support given file name and path for Inventor ShrinkWrap file (_SuggestedVaultPath is empty for these)
 			$global:mShrnkWrp = $false
