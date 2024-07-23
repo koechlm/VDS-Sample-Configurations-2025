@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDS-MFG-Sample", "VDS-MFG-Sample\VDS-MFG-Sample.csproj", "{6E0263E1-C5BE-4E5E-B189-35A6238BA456}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDS-PDMC-Sample", "VDS-PDMC-Sample\VDS-PDMC-Sample.csproj", "{1240594B-F6D1-40B1-885A-9995855265A1}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SDK Refs", "SDK Refs", "{61E2150B-5ED6-4D81-B18E-657C2FE8AFA3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2024.NET48", "2024.NET48", "{E039CCCD-8263-42C8-A9F2-16D189343390}"
@@ -47,18 +43,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6E0263E1-C5BE-4E5E-B189-35A6238BA456}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{6E0263E1-C5BE-4E5E-B189-35A6238BA456}.Debug|x64.ActiveCfg = Debug|x64
-		{6E0263E1-C5BE-4E5E-B189-35A6238BA456}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E0263E1-C5BE-4E5E-B189-35A6238BA456}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6E0263E1-C5BE-4E5E-B189-35A6238BA456}.Release|x64.ActiveCfg = Release|Any CPU
-		{6E0263E1-C5BE-4E5E-B189-35A6238BA456}.Release|x64.Build.0 = Release|Any CPU
-		{1240594B-F6D1-40B1-885A-9995855265A1}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{1240594B-F6D1-40B1-885A-9995855265A1}.Debug|x64.ActiveCfg = Debug|x64
-		{1240594B-F6D1-40B1-885A-9995855265A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1240594B-F6D1-40B1-885A-9995855265A1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1240594B-F6D1-40B1-885A-9995855265A1}.Release|x64.ActiveCfg = Release|Any CPU
-		{1240594B-F6D1-40B1-885A-9995855265A1}.Release|x64.Build.0 = Release|Any CPU
 		{EDBE82D2-BA96-44C6-8D77-AE8CF587CA0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EDBE82D2-BA96-44C6-8D77-AE8CF587CA0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDBE82D2-BA96-44C6-8D77-AE8CF587CA0F}.Debug|x64.ActiveCfg = Debug|Any CPU
