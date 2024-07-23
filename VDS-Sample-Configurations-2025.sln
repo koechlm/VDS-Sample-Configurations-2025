@@ -20,6 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2025.NET48", "2025.NET48", 
 		SDK Refs\2025.NET48\Autodesk.DataManagement.Client.Framework.Forms.dll = SDK Refs\2025.NET48\Autodesk.DataManagement.Client.Framework.Forms.dll
 		SDK Refs\2025.NET48\Common.dll = SDK Refs\2025.NET48\Common.dll
 		SDK Refs\2025.NET48\CreateObject.dll = SDK Refs\2025.NET48\CreateObject.dll
+		SDK Refs\2025.NET48\log4net.dll = SDK Refs\2025.NET48\log4net.dll
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2025.NET.Core", "2025.NET.Core", "{2AAF620E-5539-48A7-B0BA-ABF4B1E04B98}"
@@ -33,6 +34,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDS-MFG-Sample-CAD", "VDS-MFG-Sample-CAD\VDS-MFG-Sample-CAD.csproj", "{EDBE82D2-BA96-44C6-8D77-AE8CF587CA0F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDS-PDMC-Sample-CAD", "VDS-PDMC-Sample-CAD\VDS-PDMC-Sample-CAD.csproj", "{B6B85DF5-21E6-4B4A-932A-4DAB6D649050}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDS-MFG-Sample-Vault", "VDS-MFG-Sample-Vault\VDS-MFG-Sample-Vault.csproj", "{927CED55-C903-42E4-988D-E511DCA7F34A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDS-PDMC-Sample-Vault", "VDS-PDMC-Sample-Vault\VDS-PDMC-Sample-Vault.csproj", "{D873D3D5-90B3-4557-9702-9C9E585BF9DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,6 +75,22 @@ Global
 		{B6B85DF5-21E6-4B4A-932A-4DAB6D649050}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B6B85DF5-21E6-4B4A-932A-4DAB6D649050}.Release|x64.ActiveCfg = Release|Any CPU
 		{B6B85DF5-21E6-4B4A-932A-4DAB6D649050}.Release|x64.Build.0 = Release|Any CPU
+		{927CED55-C903-42E4-988D-E511DCA7F34A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{927CED55-C903-42E4-988D-E511DCA7F34A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{927CED55-C903-42E4-988D-E511DCA7F34A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{927CED55-C903-42E4-988D-E511DCA7F34A}.Debug|x64.Build.0 = Debug|Any CPU
+		{927CED55-C903-42E4-988D-E511DCA7F34A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{927CED55-C903-42E4-988D-E511DCA7F34A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{927CED55-C903-42E4-988D-E511DCA7F34A}.Release|x64.ActiveCfg = Release|Any CPU
+		{927CED55-C903-42E4-988D-E511DCA7F34A}.Release|x64.Build.0 = Release|Any CPU
+		{D873D3D5-90B3-4557-9702-9C9E585BF9DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D873D3D5-90B3-4557-9702-9C9E585BF9DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D873D3D5-90B3-4557-9702-9C9E585BF9DF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D873D3D5-90B3-4557-9702-9C9E585BF9DF}.Debug|x64.Build.0 = Debug|Any CPU
+		{D873D3D5-90B3-4557-9702-9C9E585BF9DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D873D3D5-90B3-4557-9702-9C9E585BF9DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D873D3D5-90B3-4557-9702-9C9E585BF9DF}.Release|x64.ActiveCfg = Release|Any CPU
+		{D873D3D5-90B3-4557-9702-9C9E585BF9DF}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
