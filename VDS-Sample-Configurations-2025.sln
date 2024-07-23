@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.34407.143
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDS-MFG-Sample", "VDS-MFG-Sample\VDS-MFG-Sample.csproj", "{6E0263E1-C5BE-4E5E-B189-35A6238BA456}"
 EndProject
@@ -20,6 +20,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2025.NET48", "2025.NET48", 
 		SDK Refs\2025.NET48\Autodesk.DataManagement.Client.Framework.Forms.dll = SDK Refs\2025.NET48\Autodesk.DataManagement.Client.Framework.Forms.dll
 		SDK Refs\2025.NET48\Common.dll = SDK Refs\2025.NET48\Common.dll
 		SDK Refs\2025.NET48\CreateObject.dll = SDK Refs\2025.NET48\CreateObject.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2025.NET.Core", "2025.NET.Core", "{2AAF620E-5539-48A7-B0BA-ABF4B1E04B98}"
+	ProjectSection(SolutionItems) = preProject
+		SDK Refs\2025.NET8\Autodesk.Connectivity.WebServices.dll = SDK Refs\2025.NET8\Autodesk.Connectivity.WebServices.dll
+		SDK Refs\2025.NET8\Autodesk.DataManagement.Client.Framework.Forms.dll = SDK Refs\2025.NET8\Autodesk.DataManagement.Client.Framework.Forms.dll
+		SDK Refs\2025.NET8\dataStandard.UI.dll = SDK Refs\2025.NET8\dataStandard.UI.dll
+		SDK Refs\2025.NET8\log4net.dll = SDK Refs\2025.NET8\log4net.dll
 	EndProjectSection
 EndProject
 Global
@@ -49,6 +57,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E039CCCD-8263-42C8-A9F2-16D189343390} = {61E2150B-5ED6-4D81-B18E-657C2FE8AFA3}
 		{3AF474E9-C0FF-4174-9C6F-654D23D20B3A} = {61E2150B-5ED6-4D81-B18E-657C2FE8AFA3}
+		{2AAF620E-5539-48A7-B0BA-ABF4B1E04B98} = {61E2150B-5ED6-4D81-B18E-657C2FE8AFA3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {49F385F7-02AE-4357-83AF-7551D13CABE9}
