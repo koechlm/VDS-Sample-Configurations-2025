@@ -181,7 +181,7 @@ function InitializeWindow {
 							$Prop["Stock Number"].Value = $_mInvHelpers.m_GetMainViewModelPropValue($Application, $_ModelFullFileName, "Stock Number")
 							# for custom properties there is always a risk that any does not exist
 							try {
-<# 								$_iPropSpearWearPart = $mPropTrans["SPAREPART"] #available in PDMC-Sample Vault only
+							<#$_iPropSpearWearPart = $mPropTrans["SPAREPART"] #available in PDMC-Sample Vault only
 								$_t1 = $_mInvHelpers.m_GetMainViewModelPropValue($Application, $_ModelFullFileName, $_iPropSpearWearPart)
 								if ($_t1 -ne "") {
 									$Prop[$_iPropSpearWearPart].Value = $_t1
@@ -191,6 +191,15 @@ function InitializeWindow {
 								$mWarningMsg = "Set path, filename and properties for IPN: Failed to write a custom property."
 								[Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowWarning($mWarningMsg, "VDS Sample Configuration", "OK")
 							}
+						}
+					}
+
+					if ($Prop["_FileExt"].Value -eq ".IPT" -and $global:mShrnkWrp -eq $true) {
+						$_ModelFullFileName = $_mInvHelpers.m_GetShrinkWrapParentFullFileName($Application)
+						if ($null -ne $_ModelFullFileName) {
+							$Prop["Title"].Value = $_mInvHelpers.m_GetInventorPropertyValue($Application, $_ModelFullFileName, "Title")
+							$Prop["Description"].Value = $_mInvHelpers.m_GetInventorPropertyValue($Application, $_ModelFullFileName, "Description")
+							$Prop["Part Number"].Value = $_mInvHelpers.m_GetInventorPropertyValue($Application, $_ModelFullFileName, "Part Number")
 						}
 					}
 

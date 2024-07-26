@@ -232,6 +232,15 @@ function InitializeWindow {
 						}
 					}
 
+					if ($Prop["_FileExt"].Value -eq ".IPT" -and $global:mShrnkWrp -eq $true) {
+						$_ModelFullFileName = $_mInvHelpers.m_GetShrinkWrapParentFullFileName($Application)
+						if ($null -ne $_ModelFullFileName) {
+							$Prop["Title"].Value = $_mInvHelpers.m_GetInventorPropertyValue($Application, $_ModelFullFileName, "Title")
+							$Prop["Description"].Value = $_mInvHelpers.m_GetInventorPropertyValue($Application, $_ModelFullFileName, "Description")
+							$Prop["Part Number"].Value = $_mInvHelpers.m_GetInventorPropertyValue($Application, $_ModelFullFileName, "Part Number")
+						}
+					}	
+
 				} # end of copy mode = false check
 
 				#overridden display names will change suggested file names. Reset overrides!

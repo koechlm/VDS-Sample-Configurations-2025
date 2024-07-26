@@ -267,11 +267,20 @@
         </member>
         <member name="M:VdsSampleUtilities.InvHelpers.m_GetMainViewModelPropValue(System.Object,System.String,System.String)">
             <summary>
-            Retrieve property value of main view referenced model
+            DEPRECATED - Use m_GetInventorPropertyValue instead (Retrieve property value of main view referenced model)
             </summary>
             <param name="m_InvApp">Connect to the hosting instance of the VDS dialog</param>
             <param name="m_ViewModelFullName"></param>
             <param name="m_PropName">Display Name</param>
+            <returns></returns>
+        </member>
+        <member name="M:VdsSampleUtilities.InvHelpers.m_GetInventorPropertyValue(System.Object,System.String,System.String)">
+            <summary>
+            Retrieve property value of the given Inventor file.
+            </summary>
+            <param name="InventorApplication">Connect to the hosting instance of the VDS dialog $Application</param>
+            <param name="FullFileName"></param>
+            <param name="PropertyName">Display Name</param>
             <returns></returns>
         </member>
         <member name="M:VdsSampleUtilities.InvHelpers.m_GetMainViewModelPath(System.Object)">
@@ -281,6 +290,13 @@
             </summary>
             <param name="m_InvApp">Running host (instance of Inventor) of calling VDS Dialog.</param>
             <returns>Returns the fullfilename (path and filename incl. extension) of the referenced model as string.</returns>
+        </member>
+        <member name="M:VdsSampleUtilities.InvHelpers.m_GetShrinkWrapParentFullFileName(System.Object)">
+            <summary>
+            Gets the 3D model file path of the first Shrinkwrap Feature's referenced file.
+            </summary>
+            <param name="m_InvApp">Running host (instance of Inventor) of calling VDS Dialog.</param>
+            <returns>Returns the fullfilename (path\filename.ext) of the referenced model as string.</returns>
         </member>
         <member name="M:VdsSampleUtilities.InvHelpers.m_RemoveOrphanedSheets(System.Object)">
             <summary>
