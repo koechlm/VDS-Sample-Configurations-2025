@@ -46,6 +46,12 @@
       "Type": "Boolean",
       "Value": false,
       "IsSystem": false
+    },
+    {
+      "Name": "Use RowOrder as BOM Position",
+      "Type": "Boolean",
+      "Value": true,
+      "IsSystem": false
     }
   ],
   "Mappings": [
