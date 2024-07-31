@@ -1,3 +1,0 @@
-
-
-$dsCommands.ShowAboutDialog()
