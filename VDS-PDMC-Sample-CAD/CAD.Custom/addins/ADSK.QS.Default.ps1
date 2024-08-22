@@ -433,7 +433,7 @@ function SetWindowTitle {
 			else {
 				$windowTitle = "$($UIString["LBL25"]) - $($Prop["_FileName"].Value)"
 			}
-			if ($Prop["_EditMode"].Value -and (Get-Item $document.FullFileName).IsReadOnly) {
+			if ($Prop["_EditMode"].Value -and $Document.FileSaveCounter -gt 1 -and (Get-Item $document.FullFileName).IsReadOnly) {
 				$windowTitle = "$($UIString["LBL25"]) - $($Prop["_FileName"].Value) - $($UIString["LBL26"])"
 				$dsWindow.FindName("btnOK").ToolTip = $UIString["LBL26"]
 			}
