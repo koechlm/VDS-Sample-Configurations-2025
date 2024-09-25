@@ -5,7 +5,8 @@ function InitializeWindow
     $dsWindow.Title = SetWindowTitle		
     InitializeCategory
     InitializeNumSchm
-    InitializeBreadCrumb
+    #It will set the Folder to be the LastSelectedFolder value
+    SetFolderByLastSelectedPath
     InitializeFileNameValidation
 	#end rules applying commonly
 	$mWindowName = $dsWindow.Name
@@ -14,15 +15,75 @@ function InitializeWindow
 		"InventorWindow"
 		{
 			#rules applying for Inventor
+			if ([String]::IsNullOrEmpty($Prop["_VaultVirtualPath"].Value)) {
+                $Prop["Folder"].Value = ""
+            }
 		}
 		"AutoCADWindow"
 		{
 			#rules applying for AutoCAD
 		}
 	}
-	$global:expandBreadCrumb = $true	
+}
+function SetFolderByLastSelectedPath() {
+    $rootFolder = GetVaultRootFolder
+    if($rootFolder -eq $null){
+        $Prop["Folder"].Value = ""
+        return
+    }
+    $lastFolderPath = GetLastSelectedPath
+    #it needs to do check when switching the mapfoler 
+    if ((IsPathBelow $lastFolderPath $rootFolder.FullName ) -eq $false) {
+        return
+    }
+    $Prop["Folder"].Value = GetFolderPath $rootFolder.FullName $lastFolderPath
+}
+function GetLastSelectedPath() {
+    $lastFolderPathKey = $VaultConnection.Server + "-" + $VaultConnection.Vault + "-" + "LastFolderPath"
+    return [Autodesk.DataManagement.Client.Framework.Forms.Library]::ApplicationPreferences.Get("SelectVaultFolder", $lastFolderPathKey, "")
 }
 
+function IsPathBelow($child, $parent) {
+    return [Autodesk.DataManagement.Client.Framework.Vault.Internal.VaultFolderUtil]::IsPathBelow($child,$parent)
+}
+function GetFolderPath($rootFolderPath, $selectionPath) {
+    $isChildFolder = IsPathBelow $selectionPath $rootFolderPath 
+    if($isChildFolder -eq $false){
+        return "."
+    }
+    $folderPath = $selectionPath.Replace($rootFolderPath, "").Replace("/", "\")
+    if ([string]::IsNullOrEmpty($folderPath)) {
+        return "."
+    }
+    elseif ($folderPath.StartsWith("\")) {
+        return $folderPath.SubString(1, $folderPath.Length - 1)
+    }
+    else {
+        return $folderPath
+    }
+}
+function ShowFolderTreeView() {
+    $rootFolder = GetVaultRootFolder
+    if($rootFolder -eq $null){
+        $diaResult = [Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowMessage($UIString["TLT4"], "Can't find the Vault location", [Autodesk.DataManagement.Client.Framework.Forms.Currency.ButtonConfiguration]::Ok)
+        $dsWindow.DataContext.IsMapFolderMiss = $true
+        $dsWindow.DataContext.ErrorToolTip = $UIString["TLT4"]
+        return
+    }
+    $browsersettings = New-Object Autodesk.DataManagement.Client.Framework.Vault.Forms.Settings.SelectVaultFolderSettings($vaultconnection)
+    $browsersettings.InitialSelectedFolderPath = $rootFolder.FullName
+    $browsersettings.RestoreLastFolderPath = $true
+    $browsersettings.AllowNewFolderCreation = $true
+    $browsersettings.HelpContext = "ID_VDS_SELECTVAULTLOCATION"
+    $browsersettings.FolderCone = $rootFolder.FullName
+    #Don't support the Category and allow the user to create the folder when checking in files.
+    #$browsersettings.AddFutureFolders( [Collections.Generic.List[string]]::new())
+    $result = [Autodesk.DataManagement.Client.Framework.Vault.Forms.Library]::SelectVaultFolder($browsersettings)
+    if ($result -ne $null) {
+        $selectionPath = $result.SelectedFolderFullName
+        $Prop["Folder"].Value = GetFolderPath $rootFolder.FullName $selectionPath 
+    }
+}
 function AddinLoaded
 {
 	#Executed when DataStandard is loaded in Inventor/AutoCAD
@@ -78,7 +139,12 @@ function GetVaultRootFolder()
     {
         $mappedRootPath = '$'
     }
-    return $vault.DocumentService.GetFolderByPath($mappedRootPath)
+    try{
+        $rootFolder = $vault.DocumentService.GetFolderByPath($mappedRootPath)
+        return $rootFolder
+    }catch{
+        return $null
+    }
 }
 
 function SetWindowTitle

@@ -196,6 +196,7 @@ function mGetUIStrings {
 	return $UIString
 }
 
+<#
 function mVaultBrowser() {
 	if ($Prop["_CreateMode"].Value) {
 		$browsersettings = New-Object Autodesk.DataManagement.Client.Framework.Vault.Forms.Settings.SelectVaultFolderSettings($vaultconnection)
@@ -228,4 +229,4 @@ function mVaultBrowser() {
 			$Prop["Folder"].Value = ""
 		}
 	}
-}
+}#>
