@@ -478,7 +478,7 @@ function mAddCoComboChild ($data)
 		$Global:mCustentUdpDefs = $Global:mAllCustentPropDefs | Where-Object { $_.IsSys -eq $false}
 		$Global:mCustentDefs = $vault.CustomEntityService.GetAllCustomEntityDefinitions()
 		#configuration info - the custom object names used for the classification structure may vary. Align Custent names of your Vault in UIStrings ADSK.WS.ClassLEver_*
-		$mClsLevelNames = ("Segment", "Main Group", "Group","Sub Group")
+		$mClsLevelNames = ("Segment", "Main Group", "Group", "Sub Group", "Class")
 		$Global:mClassLevelCustentDefIds = ($Global:mCustentDefs | Where-Object { $_.DispName -in $mClsLevelNames}).Id
 	}
 
@@ -629,6 +629,7 @@ function mGetCustomEntityUsesList ($sender) {
 			        1 { $mSearchFilter = "Main Group"} #$UIString["Adsk.QS.ClassLevel_01"]
 			        2 { $mSearchFilter = "Group"} #$UIString["Adsk.QS.ClassLevel_02"]
 					3 { $mSearchFilter = "Sub Group"} #$UIString["Adsk.QS.ClassLevel_03"] 
+					4 { $mSearchFilter = "Class"} #$UIString["Adsk.QS.ClassLevel_04"]
 			        default { $mSearchFilter = "*"}
 		        }
 		$_customObjects = mgetCustomEntityList -_CoName $mSearchFilter
@@ -673,10 +674,12 @@ function mCoComboSelectionChanged ($sender) {
 		else { $Prop["Group"].Value = "" }
 		if ($mBreadCrumb.Children[4]) { $Prop["Sub Group"].Value = $mBreadCrumb.Children[4].SelectedItem.Name }
 		else { $Prop["Sub Group"].Value = "" }
+		if ($mBreadCrumb.Children[4]) { $Prop["Class"].Value = $mBreadCrumb.Children[5].SelectedItem.Name }
+		else { $Prop["Class"].Value = "" }
 
 		#write the highest level Custent Id to a text file for post-close event
 		$value = $mBreadCrumb.Children[$children].SelectedItem.Id
-		$value | Out-File $env:TEMP"\mParentId.txt"
+		$value | Out-File "$($env:appdata)\Autodesk\DataStandard 2025\mParentId.txt"
 
 	}
 	catch{}
@@ -714,6 +717,19 @@ function mCoComboSelectionChanged ($sender) {
 				mAddCoComboChild -sender $sender.SelectedItem
 			}
 		}
+
+		"Class"
+		{
+			if($position -eq 4)
+			{
+				return
+			}
+			else
+			{
+				mAddCoComboChild -sender $sender.SelectedItem
+			}
+		}
+
 		default
 		{
 			mAddCoComboChild -sender $sender.SelectedItem

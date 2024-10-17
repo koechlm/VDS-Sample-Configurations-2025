@@ -130,6 +130,26 @@ function mUpdateFldrProperties([Long] $FldId, [String] $mDispName, [Object] $mVa
     catch { return $false}
 }
 
+
+function mUpdateCustentProperty([Long] $CustentId, [String] $mDispName, [Object] $mVal)
+{
+	$ent_idsArray = @()
+	$ent_idsArray += $CustentId
+	$propInstParam = New-Object Autodesk.Connectivity.WebServices.PropInstParam
+	$propInstParamArray = New-Object Autodesk.Connectivity.WebServices.PropInstParamArray
+	$mPropDefId = mGetCustentPropertyDefId $mDispName
+ 	$propInstParam.PropDefId = $mPropDefId
+	$propInstParam.Val = $mVal
+	$propInstParamArray.Items += $propInstParam
+	$propInstParamArrayArray += $propInstParamArray
+	Try{
+		$vault.CustomEntityService.UpdateCustomEntityProperties($ent_idsArray, $propInstParamArrayArray)
+	    return $true
+	}
+	catch { return $false}
+}
+
+
 #show current runspace ID as input parameter to be used in step by step debugging
 function ShowRunspaceID
 {

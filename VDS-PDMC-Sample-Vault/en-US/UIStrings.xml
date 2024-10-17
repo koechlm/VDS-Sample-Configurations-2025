@@ -459,6 +459,7 @@
   <UIString ID="Adsk.QS.ClassLevel_01">Main Group</UIString>
   <UIString ID="Adsk.QS.ClassLevel_02">Group</UIString>
   <UIString ID="Adsk.QS.ClassLevel_03">Sub Group</UIString>
+  <UIString ID="Adsk.QS.ClassLevel_04">Class</UIString>
   <UIString ID="Adsk.QS.Classification_00">Class</UIString>
   <UIString ID="Adsk.QS.Classification_01">Name</UIString>
   <UIString ID="Adsk.QS.Classification_02">Value</UIString>
