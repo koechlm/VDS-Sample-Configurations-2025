@@ -567,6 +567,10 @@ function mResetClassSelection
 	$mBreadCrumb = $AssignClsWindow.FindName("wrpClassification2")
 	$children = @()
 	$children += mGetCustentClsLevelList -ClassLevelName "Segment"
+	if ($children.Count -eq 0) {
+		[Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowError("Could not initialize the classification root - probably your base classes do not match the selected Standard", "VDS Sample -- Classification")
+		return
+	}
 	$mBreadCrumb.Children[0].ItemsSource = $children 
 	$mBreadCrumb.Children[0].SelectedIndex = -1
 	$AssignClsWindow.FindName("btnClsReset2").IsEnabled = $false
