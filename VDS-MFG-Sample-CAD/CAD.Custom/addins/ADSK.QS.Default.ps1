@@ -7,8 +7,15 @@
 
 function InitializeWindow {
 
+	#$dsDiag.ShowLog()
+	#$dsDiag.Clear()
+
 	$dsWindow.Title = SetWindowTitle
 	$Global:mCategories = GetCategories
+
+	#new folder selection 2025.2 ++
+	#It will set the Folder to be the LastSelectedFolder value
+    SetFolderByLastSelectedPath
 
 	# leverage the current theme variable in theme dependent path names etc.
 	$Global:currentTheme = [Autodesk.DataManagement.Client.Framework.Forms.SkinUtils.WinFormsTheme]::Instance.CurrentTheme
@@ -16,10 +23,20 @@ function InitializeWindow {
 	$mWindowName = $dsWindow.Name
 	switch ($mWindowName) {
 		"InventorWindow" {
+
+			#new folder selection 2025.2 ++
+			if ([String]::IsNullOrEmpty($Prop["_VaultVirtualPath"].Value)) {
+                $Prop["Folder"].Value = ""
+            }
+
+			if ($document.FileSaveCounter -ne 0) {
+				$Global:mReadOnly = (Get-Item $document.FullFileName).IsReadOnly
+			}
+
 			#support given file name and path for Inventor ShrinkWrap file (_SuggestedVaultPath is empty for these)
 			$global:mShrnkWrp = $false
 
-			InitializeBreadCrumb
+			#InitializeBreadCrumb
 
 			#	there are some custom functions to enhance functionality; 2023 version added webservice and explorer extensions to be installed optionally
 			$mVdsUtilities = "$($env:programdata)\Autodesk\Vault 2025\Extensions\Autodesk.VdsSampleUtilities\VdsSampleUtilities.dll"
@@ -217,10 +234,10 @@ function InitializeWindow {
 			}
 			Else { 
 				# EditMode = True
-				if ((Get-Item $document.FullFileName).IsReadOnly) {
+				if ($mReadOnly -eq $true) {
 					#disable the OK button
 					$dsWindow.FindName("btnOK").IsEnabled = $false
-				}				
+				}					
 			}
 				
 			#VDS MFG/PDMC Sample - handle weldbead material" 
@@ -248,7 +265,7 @@ function InitializeWindow {
 			mInitializeCHContext
 		}
 		"AutoCADWindow" {
-			InitializeBreadCrumb
+			
 			switch ($Prop["_CreateMode"].Value) {
 				$true {
 					#$dsDiag.Trace(">> CreateMode Section executes...")
@@ -259,7 +276,7 @@ function InitializeWindow {
 						$Prop["GEN-TITLE-NAME"].Value = $mUser.Name #	$Prop["Designer"].Value = $mUser.Name
 					}
 					#set the current date as orig. Create Date
-					if ($Prop["GEN-TITLE-DAT"]){
+					if ($Prop["GEN-TITLE-DAT"]) {
 						$Prop["GEN-TITLE-DAT"].Value = (Get-Date).ToString('yyyy-MM-dd')
 					}
 
@@ -321,6 +338,69 @@ function InitializeWindow {
 	InitializeFileNameValidation #do this at the end of all other event initializations
 }
 
+function SetFolderByLastSelectedPath() {
+    $rootFolder = GetVaultRootFolder
+    if($rootFolder -eq $null){
+        $Prop["Folder"].Value = ""
+        return
+    }
+    $lastFolderPath = GetLastSelectedPath
+    #it needs to do check when switching the mapfoler 
+    if ((IsPathBelow $lastFolderPath $rootFolder.FullName ) -eq $false) {
+        return
+    }
+    $Prop["Folder"].Value = GetFolderPath $rootFolder.FullName $lastFolderPath
+}
+
+function GetLastSelectedPath() {
+    $lastFolderPathKey = $VaultConnection.Server + "-" + $VaultConnection.Vault + "-" + "LastFolderPath"
+    return [Autodesk.DataManagement.Client.Framework.Forms.Library]::ApplicationPreferences.Get("SelectVaultFolder", $lastFolderPathKey, "")
+}
+
+function IsPathBelow($child, $parent) {
+    return [Autodesk.DataManagement.Client.Framework.Vault.Internal.VaultFolderUtil]::IsPathBelow($child,$parent)
+}
+
+function GetFolderPath($rootFolderPath, $selectionPath) {
+    $isChildFolder = IsPathBelow $selectionPath $rootFolderPath 
+    if($isChildFolder -eq $false){
+        return "."
+    }
+    $folderPath = $selectionPath.Replace($rootFolderPath, "").Replace("/", "\")
+    if ([string]::IsNullOrEmpty($folderPath)) {
+        return "."
+    }
+    elseif ($folderPath.StartsWith("\")) {
+        return $folderPath.SubString(1, $folderPath.Length - 1)
+    }
+    else {
+        return $folderPath
+    }
+}
+
+function ShowFolderTreeView() {
+    $rootFolder = GetVaultRootFolder
+    if($rootFolder -eq $null){
+        $diaResult = [Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowMessage($UIString["TLT4"], "Can't find the Vault location", [Autodesk.DataManagement.Client.Framework.Forms.Currency.ButtonConfiguration]::Ok)
+        $dsWindow.DataContext.IsMapFolderMiss = $true
+        $dsWindow.DataContext.ErrorToolTip = $UIString["TLT4"]
+        return
+    }
+    $browsersettings = New-Object Autodesk.DataManagement.Client.Framework.Vault.Forms.Settings.SelectVaultFolderSettings($vaultconnection)
+    $browsersettings.InitialSelectedFolderPath = $rootFolder.FullName
+    $browsersettings.RestoreLastFolderPath = $true
+    $browsersettings.AllowNewFolderCreation = $true
+    $browsersettings.HelpContext = "ID_VDS_SELECTVAULTLOCATION"
+    $browsersettings.FolderCone = $rootFolder.FullName
+    #Don't support the Category and allow the user to create the folder when checking in files.
+    #$browsersettings.AddFutureFolders( [Collections.Generic.List[string]]::new())
+    $result = [Autodesk.DataManagement.Client.Framework.Vault.Forms.Library]::SelectVaultFolder($browsersettings)
+    if ($result -ne $null) {
+        $selectionPath = $result.SelectedFolderFullName
+        $Prop["Folder"].Value = GetFolderPath $rootFolder.FullName $selectionPath 
+    }
+}
+
 function AddinLoaded {
 	#activate or create the user's VDS profile
 	$m_File = "$($env:appdata)\Autodesk\DataStandard 2025\Folder2025.xml"
@@ -334,15 +414,19 @@ function AddinUnloaded {
 	#Executed when DataStandard is unloaded in Inventor/AutoCAD
 }
 
-function GetVaultRootFolder()
-{
-    $mappedRootPath = $Prop["_VaultVirtualPath"].Value + $Prop["_WorkspacePath"].Value
-    $mappedRootPath = $mappedRootPath -replace "\\", "/" -replace "//", "/"
-    if ($mappedRootPath -eq '')
-    {
-        $mappedRootPath = '$'
+function GetVaultRootFolder() {
+	$mappedRootPath = $Prop["_VaultVirtualPath"].Value + $Prop["_WorkspacePath"].Value
+	$mappedRootPath = $mappedRootPath -replace "\\", "/" -replace "//", "/"
+	if ($mappedRootPath -eq '') {
+		$mappedRootPath = '$'
+	}
+	try{
+		$rootFolder = $vault.DocumentService.GetFolderByPath($mappedRootPath)
+		return $rootFolder
+	}
+	catch{
+        return $null
     }
-    return $vault.DocumentService.GetFolderByPath($mappedRootPath)
 }
 
 function SetWindowTitle {
@@ -410,7 +494,8 @@ function InitializeInventorNumSchm {
 	if ($Prop["_SaveCopyAsMode"].Value -eq $true) {
 		$Prop["_NumSchm"].Value = $UIString["LBL77"]
 	}
-	if ($Prop["_Category"].Value -eq $UIString["MSDCE_CAT12"]) { #Substitutes, as reference parts should not retrieve individual new number
+	if ($Prop["_Category"].Value -eq $UIString["MSDCE_CAT12"]) { 
+		#Substitutes, as reference parts should not retrieve individual new number
 		$Prop["_NumSchm"].Value = $UIString["LBL77"]
 	}
 	if ($dsWindow.Name -eq "InventorFrameWindow") {
@@ -422,7 +507,8 @@ function InitializeInventorCategory {
 	$mDocType = $Document.DocumentType
 	$mDocSubType = $Document.SubType #differentiate part/sheet metal part and assembly/weldment assembly
 	switch ($mDocType) {
-		'12291' { #assembly 
+		'12291' { 
+			#assembly 
 			$mCatName = $Global:mCategories | Where-Object { $_.Name -eq $UIString["MSDCE_CAT10"] } #assembly, available in PDMC-Sample Vault
 			IF ($mCatName) { 
 				$Prop["_Category"].Value = $UIString["MSDCE_CAT10"]
@@ -567,9 +653,6 @@ function OnPostCloseDialog {
 	$mWindowName = $dsWindow.Name
 	switch ($mWindowName) {
 		"InventorWindow" {
-			if ($Prop["_CreateMode"].Value -and !($Prop["_CopyMode"].Value -and !$Prop["_GenerateFileNumber4SpecialFiles"].Value -and @(".DWG", ".IDW", ".IPN") -contains $Prop["_FileExt"].Value)) {
-				mWriteLastUsedFolder
-			}
 
 			if ($Prop["_CreateMode"].Value -and !$Prop["Part Number"].Value) { #we empty the part number on initialize: if there is no other function to provide part numbers we should apply the Inventor default
 				$Prop["Part Number"].Value = $Prop["DocNumber"].Value
@@ -594,9 +677,6 @@ function OnPostCloseDialog {
 		{
 			#rules applying for AutoCAD
 			if ($Prop["_CreateMode"]) {
-
-				mWriteLastUsedFolder
-
 				#the default ACM Titleblocks expect the file name and drawing number as attribute values; adjust property(=attribute) names for custom titleblock definitions
 				$dc = $dsWindow.DataContext
 				$Prop["GEN-TITLE-DWG"].Value = $dc.PathAndFileNameHandler.FileName
@@ -961,20 +1041,7 @@ function  mClickScTreeItem {
 		$_key = $dsWindow.FindName("ScTree").SelectedItem.Name
 		if ($Global:m_ScDict.ContainsKey($_key)) {
 			$_Val = $Global:m_ScDict.get_item($_key)
-			$_SPath = @()
-			$_SPath = $_Val.Split("/")
-	
-			$m_DesignPathNames = $null
-			[System.Collections.ArrayList]$m_DesignPathNames = @()
-			#differentiate AutoCAD and Inventor: AutoCAD is able to start in $, but Inventor starts in it's mandatory Workspace folder (IPJ)
-			IF ($dsWindow.Name -eq "InventorWindow") { $indexStart = 2 }
-			If ($dsWindow.Name -eq "AutoCADWindow") { $indexStart = 1 }
-			for ($index = $indexStart; $index -lt $_SPath.Count; $index++) {
-				$m_DesignPathNames += $_SPath[$index]
-			}
-			if ($m_DesignPathNames.Count -eq 1) { $m_DesignPathNames += "." }
-			mActivateBreadCrumbCmbs $m_DesignPathNames
-			$global:expandBreadCrumb = $true
+			$Prop["Folder"].Value = $_Val.Replace("vaultfolderpath:$/", "")	
 		}
 	}
 	catch {
@@ -1005,33 +1072,28 @@ function mRemoveSc {
 	catch { }
 }
 
-function mAddShortCutByName([STRING] $mScName)
-{
-	try #simply check that the name is unique
-	{
+function mAddShortCutByName([STRING] $mScName) {
+	try { #simply check that the name is unique
 		#$dsDiag.Trace(">> Start to add ShortCut, check for used name...")
-		$Global:m_ScDict.Add($mScName,"Dummy")
+		$Global:m_ScDict.Add($mScName, "Dummy")
 		$global:m_ScDict.Remove($mScName)
 	}
-	catch #no reason to continue in case of existing name
-	{
+	catch { #no reason to continue in case of existing name
 		[Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowError($UIString["MSDCE_MSG01"], "VDS MFG Sample Client")
 		end function
 	}
 
-	try 
-	{
+	try {
 		#$dsDiag.Trace(">> Continue to add ShortCut, creating new from template...")	
 		#read from template
 		$m_File = "$($env:appdata)\Autodesk\DataStandard 2025\Folder2025.xml"
 
-		if (Test-Path $m_File)
-		{
+		if (Test-Path $m_File) {
 			#$dsDiag.Trace(">>-- Started to read Folder2025.xml...")
 			$global:m_XML = New-Object XML
 			$global:m_XML.Load($m_File)
 		}
-		$mShortCut = $global:m_XML.VDSUserProfile.Shortcut | Where-Object { $_.Name -eq "Template"}
+		$mShortCut = $global:m_XML.VDSUserProfile.Shortcut | Where-Object { $_.Name -eq "Template" }
 		#clone the template completely and update name attribute and navigationcontext element
 		$mNewSc = $mShortCut.Clone() #.CloneNode($true)
 		#rename "Template" to new name
@@ -1039,25 +1101,14 @@ function mAddShortCutByName([STRING] $mScName)
 		#provide a unique ID
 		$mNewSc.Id = [System.Guid]::NewGuid().ToString();
 
-		#derive the path from current selection
-		$breadCrumb = $dsWindow.FindName("BreadCrumb")
-		$newURI = "vaultfolderpath:" + $global:CAx_Root
-		foreach ($cmb in $breadCrumb.Children) 
-		{
-			if (($cmb.SelectedItem.Name.Length -gt 0) -and !($cmb.SelectedItem.Name -eq "."))
-			{ 
-				$newURI = $newURI + "/" + $cmb.SelectedItem.Name
-				#$dsDiag.Trace(" - the updated URI  of the shortcut: $newURI")
-			}
-			else { break}
-		}
+		#derive the path from current selection		
+		$newURI = "vaultfolderpath:" + $dsWindow.FindName("txtVaultLocation").Text
 		
 		#hand over the path in shortcut navigation format
 		$mNewSc.NavigationContext.URI = $newURI
-
-		#get the navigation folder's color
-		$mFldrPath = $newURI.Replace("vaultfolderpath:", "")	
-		$mFldr = $vault.DocumentService.FindFoldersByPaths(@($mFldrPath))		
+		#get the navigation folder's color		
+		$mFldr = $vault.DocumentService.FindFoldersByPaths(@($dsWindow.FindName("txtVaultLocation").Text))
+		$dsDiag.Inspect()
 		$mCatDef = $vault.CategoryService.GetCategoryById($mFldr[0].Cat.CatId)
 		$mFldrColor = [System.Drawing.Color]::FromArgb($mCatDef.Color)
 		#replace the ARGB colors in the template
@@ -1067,15 +1118,14 @@ function mAddShortCutByName([STRING] $mScName)
 		$mNewSc.ImageMetaData = $mImageNode
 
 		#append the new shortcut and save back to file
-		$mImpNode = $global:m_ScXML.ImportNode($mNewSc,$true)
+		$mImpNode = $global:m_ScXML.ImportNode($mNewSc, $true)
 		$global:m_ScXML.Shortcuts.AppendChild($mImpNode)
 		$global:m_ScXML.Save($mScFile)
 		$dsWindow.FindName("txtNewShortCut").Text = ""
 		#$dsDiag.Trace("..successfully added ShortCut <<")
 		return $true
 	}
-	catch 
-	{
+	catch {
 		$dsDiag.Trace("..problem encountered adding ShortCut <<")
 		return $false
 	}
