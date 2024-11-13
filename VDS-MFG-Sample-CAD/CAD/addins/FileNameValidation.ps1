@@ -45,6 +45,11 @@ function FileNameCustomValidation
     }
     
     $rootFolder = GetVaultRootFolder
+    if($rootFolder -eq $null)
+    {
+        $Prop["$($propertyName)"].CustomValidationErrorMessage = "$($UIString["TLT4"])"
+        return $false
+    }
 
     $fileName = $Prop["_FileName"].Value
 
