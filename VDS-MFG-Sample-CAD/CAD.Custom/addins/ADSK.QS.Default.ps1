@@ -20,6 +20,16 @@ function InitializeWindow {
 	# leverage the current theme variable in theme dependent path names etc.
 	$Global:currentTheme = [Autodesk.DataManagement.Client.Framework.Forms.SkinUtils.WinFormsTheme]::Instance.CurrentTheme
 
+	# check if the file is a shrinkwrap; we need to pre-set the folder to the parent file's location
+	$mShrnkWrp = $false					
+	if ($Document.ComponentDefinition.ReferenceComponents.ShrinkwrapComponents.Count -ne 0) {
+		$mShrnkWrp = $true
+		# Inventor shrinkwrap workflow; replace the last used folder with the parent file's location.						
+		$mFilePath = $Document.FullFileName.Replace($Document.DisplayName, "")	
+		$mWrkngFldr = $vaultConnection.WorkingFoldersManager.GetWorkingFolder("$")
+		$mVaultPath = "$/" + $mFilePath.Replace($mWrkngFldr, "") -replace "\\", "/" -replace "//", "/"
+		$Prop["Folder"].Value = $mVaultPath.Replace($Prop["_VaultVirtualPath"].Value, "").Replace(($Prop["_WorkspacePath"].Value + "/").Replace("\", "/"), "")
+	}	
 	$mWindowName = $dsWindow.Name
 	switch ($mWindowName) {
 		"InventorWindow" {
@@ -32,11 +42,6 @@ function InitializeWindow {
 			if ($document.FileSaveCounter -ne 0) {
 				$Global:mReadOnly = (Get-Item $document.FullFileName).IsReadOnly
 			}
-
-			#support given file name and path for Inventor ShrinkWrap file (_SuggestedVaultPath is empty for these)
-			$global:mShrnkWrp = $false
-
-			#InitializeBreadCrumb
 
 			#	there are some custom functions to enhance functionality; 2023 version added webservice and explorer extensions to be installed optionally
 			$mVdsUtilities = "$($env:programdata)\Autodesk\Vault 2025\Extensions\Autodesk.VdsSampleUtilities\VdsSampleUtilities.dll"
@@ -79,7 +84,8 @@ function InitializeWindow {
 			}
 
 			#enable option to remove orphaned sheets in drawings
-			if (-not $Prop["_SaveCopyAsMode"].Value -eq $true) { #the SaveCopyAs.xaml does not have the option to remove orhaned sheets
+			if (-not $Prop["_SaveCopyAsMode"].Value -eq $true) {
+				#the SaveCopyAs.xaml does not have the option to remove orhaned sheets
 				if (@(".DWG", ".IDW") -contains $Prop["_FileExt"].Value) {
 					$dsWindow.FindName("RmOrphShts").Visibility = "Visible"
 				}
@@ -102,7 +108,7 @@ function InitializeWindow {
 				}
 				InitializeInventorCategory
 				InitializeInventorNumSchm
-				#Initialize Shortcuts
+				#Initialize Shortcut Pane
 				mFillMyScTree
 
 				#set the active user as Inventor Designer
@@ -211,7 +217,7 @@ function InitializeWindow {
 						}
 					}
 
-					if ($Prop["_FileExt"].Value -eq ".IPT" -and $global:mShrnkWrp -eq $true) {
+					if ($Prop["_FileExt"].Value -eq ".IPT" -and $mShrnkWrp -eq $true) {
 						$_ModelFullFileName = $_mInvHelpers.m_GetShrinkWrapParentFullFileName($Application)
 						if ($null -ne $_ModelFullFileName) {
 							$Prop["Title"].Value = $_mInvHelpers.m_GetInventorPropertyValue($Application, $_ModelFullFileName, "Title")
@@ -561,7 +567,7 @@ function InitializeInventorCategory {
 		'12292' { #drawing
 			$mCatName = $Global:mCategories | Where-Object { $_.Name -eq $UIString["MSDCE_CAT00"] }
 			IF ($mCatName) { $Prop["_Category"].Value = $UIString["MSDCE_CAT00"] }
-			Else { # in case the current vault is not MFG-Sample (Quickstart, but a plain MFG default configuration
+			Else { # in case the current vault is not MFG-Sample, but a plain MFG default configuration
 				$mCatName = $Global:mCategories | Where-Object { $_.Name -eq $UIString["CAT1"] } #"Engineering"
 				IF ($mCatName) { $Prop["_Category"].Value = $UIString["CAT1"] }
 			}
@@ -607,7 +613,7 @@ function GetNumSchms {
 			$_FilteredNumSchems += $noneNumSchm
 			
 			#Inventor ShrinkWrap workflows suggest a file name; allow user overrides
-			if ($dsWindow.Name -eq "InventorWindow" -and $global:mShrnkWrp -eq $true) {
+			if ($dsWindow.Name -eq "InventorWindow" -and $mShrnkWrp -eq $true) {
 				if ($Prop["_NumSchm"].Value) { $Prop["_NumSchm"].Value = $_FilteredNumSchems[1].Name } # None 	
 			}
 
@@ -673,8 +679,7 @@ function OnPostCloseDialog {
 			}
 		}
 
-		"AutoCADWindow"
-		{
+		"AutoCADWindow"	{
 			#rules applying for AutoCAD
 			if ($Prop["_CreateMode"]) {
 				#the default ACM Titleblocks expect the file name and drawing number as attribute values; adjust property(=attribute) names for custom titleblock definitions
@@ -911,8 +916,8 @@ function mFillMyScTree {
 }
 
 function mAddTreeNode($XmlNode, $TreeLevel, $EnableDelete) {
-	if ($XmlNode.LocalName -eq "Shortcut") {
-		if (($XmlNode.NavigationContextType -eq "Connectivity.Explorer.Document.DocFolder") -and ($XmlNode.NavigationContext.URI -like "*"+$global:CAx_Root + "/*")) {
+	if ($XmlNode.LocalName -eq "Shortcut") {		
+		if (($XmlNode.NavigationContextType -eq "Connectivity.Explorer.Document.DocFolder")) {
 			#add the shortcut to the dictionary for instant read on selection change
 			$Global:m_ScDict.Add($XmlNode.Name, $XmlNode.NavigationContext.URI)				
 			#create a tree node
@@ -933,7 +938,7 @@ function mAddTreeNode($XmlNode, $TreeLevel, $EnableDelete) {
 			}
 			$child = $NextLevel
 		}
-		else{
+		else {
 			$child = [TreeNode]::new($XmlNode.Name, $IconSource)
 		}
 		#add the group to the tree		
@@ -983,7 +988,8 @@ function mGetIconSource {
 			$ImageRecolored.Save($FlrdArgbName)
 			$ImageRecolored.Dispose()
 			return $FlrdArgbName
-		}	}	
+		}
+	}	
 	
 	return $ImagePath
 }
@@ -1040,14 +1046,20 @@ function  mClickScTreeItem {
 	try {
 		$_key = $dsWindow.FindName("ScTree").SelectedItem.Name
 		if ($Global:m_ScDict.ContainsKey($_key)) {
-			$_Val = $Global:m_ScDict.get_item($_key)
-			$Prop["Folder"].Value = $_Val.Replace("vaultfolderpath:$/", "")	
+			if ($dsWindow.Name -eq "AutoCADWindow")
+			{
+				$_Val = $Global:m_ScDict.get_item($_key)				
+			}
+			else{
+				$_Val = $Global:m_ScDict.get_item($_key).Replace($Prop["_WorkspacePath"].Value.Replace("\", "/"), "")
+
+			}
+			$Prop["Folder"].Value = $_Val.Replace("vaultfolderpath:$/", "")
 		}
 	}
 	catch {
 		$dsDiag.Trace("mClickScTreeItem function - error reading selected value")
-	}
-	
+	}	
 }
 
 function mAddSc {
@@ -1102,12 +1114,12 @@ function mAddShortCutByName([STRING] $mScName) {
 		$mNewSc.Id = [System.Guid]::NewGuid().ToString();
 
 		#derive the path from current selection		
-		$newURI = "vaultfolderpath:" + $dsWindow.FindName("txtVaultLocation").Text
+		$newURI = "vaultfolderpath:" + $dsWindow.FindName("VaultLocationPath").Text
 		
 		#hand over the path in shortcut navigation format
 		$mNewSc.NavigationContext.URI = $newURI
 		#get the navigation folder's color		
-		$mFldr = $vault.DocumentService.FindFoldersByPaths(@($dsWindow.FindName("txtVaultLocation").Text))
+		$mFldr = $vault.DocumentService.FindFoldersByPaths(@($dsWindow.FindName("VaultLocationPath").Text))
 		$dsDiag.Inspect()
 		$mCatDef = $vault.CategoryService.GetCategoryById($mFldr[0].Cat.CatId)
 		$mFldrColor = [System.Drawing.Color]::FromArgb($mCatDef.Color)
@@ -1151,4 +1163,3 @@ function mRemoveShortCutByName ([STRING] $mScName) {
 	}
 }
 #endregion Shortcuts
-

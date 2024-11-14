@@ -329,7 +329,7 @@
                     <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="txtVaultLocation" Text="{Binding Path=PathAndFileNameHandler.VaultLocationPath, Mode=OneWay}" ToolTip="{Binding Path=PathAndFileNameHandler.VaultLocationPath}" IsReadOnly="True" BorderThickness="1" Margin="0,0,10,0" />
+                <TextBox x:Name="VaultLocationPath" Text="{Binding Path=PathAndFileNameHandler.VaultLocationPath, Mode=OneWay}" ToolTip="{Binding Path=PathAndFileNameHandler.VaultLocationPath}" IsReadOnly="True" BorderThickness="1" Margin="0,0,10,0" />
                 <Button  MinWidth="40" IsEnabled="{Binding CreateMode}" Style="{StaticResource ResourceKey=DisableShowLocationBtnStyle}" Command="{Binding PsCmd[ShowFolderTreeView]}" ToolTip="{Binding UIString[TLT2], FallbackValue=Select Vault Location}" Grid.Column="1">
                     <TextBlock Text="..." FontWeight="Bold"  Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" />
                 </Button>
@@ -429,9 +429,7 @@
             <TextBox x:Name="FILENAME" Grid.Column="1" 	
                     Text="{WPF:ValidatedBinding Prop[DocNumber].Value}" IsEnabled="{Binding CreateMode}" IsReadOnly="{Binding EditMode}"
             		Visibility="{Binding NumSchmFieldsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=DSNumSchmsCtrl}" IsTabStop="False"/>
-            <Label x:Name="lblPath" Content="{Binding UIString[LBL5], FallbackValue=Path}" Grid.Row="1" ToolTip="{Binding PathAndFileNameHandler.Path}" />
-            <TextBox x:Name="txtPath" VerticalAlignment="Stretch" Text="{Binding Prop[Folder].Value}" Grid.Row="1" Grid.Column="1" ToolTip="{Binding PathAndFileNameHandler.Path}" IsReadOnly="True" IsEnabled="False" IsTabStop="False" />
-        </Grid>
+            </Grid>
         <Grid x:Name="ButtonGrid" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Grid.Row="4" Grid.Column="1" Margin="2,15,3,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="80" />

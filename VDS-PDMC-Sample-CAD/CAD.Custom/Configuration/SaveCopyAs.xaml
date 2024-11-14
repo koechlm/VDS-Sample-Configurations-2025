@@ -367,7 +367,7 @@
                     <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="txtVaultLocation" Text="{Binding Path=PathAndFileNameHandler.VaultLocationPath, Mode=OneWay}" ToolTip="{Binding Path=PathAndFileNameHandler.VaultLocationPath}" IsReadOnly="True" BorderThickness="1" Margin="0,0,10,0" />
+                <TextBox x:Name="VaultLocationPath" Text="{Binding Path=PathAndFileNameHandler.VaultLocationPath, Mode=OneWay}" ToolTip="{Binding Path=PathAndFileNameHandler.VaultLocationPath}" IsReadOnly="True" BorderThickness="1" Margin="0,0,10,0" />
                 <Button  MinWidth="40" IsEnabled="{Binding CreateMode}" Style="{StaticResource ResourceKey=DisableShowLocationBtnStyle}" Command="{Binding PsCmd[ShowFolderTreeView]}" ToolTip="{Binding UIString[TLT2], FallbackValue=Select Vault Location}" Grid.Column="1">
                     <TextBlock Text="..." FontWeight="Bold"  Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" />
                 </Button>
