@@ -16,6 +16,8 @@
             <WPF:IsMoreThanZeroConverter x:Key="MoreThanZeroConverter"/>
             <WPF:InverseBoolConverter x:Key="BoolConvert"/>
             <WPF:MultiBooleanConverter x:Key="booleanAndConverter" Mode="And" />
+            <WPF:SystemIconConverter x:Key="iconConverter"/>
+            <WPF:ErrorProviderIconConverter x:Key="errorProviderIconConverter"/>
             <Style x:Key="DynamicDataGridCellStyle" TargetType="{x:Type DataGridCell}">
                 <Setter Property="KeyboardNavigation.IsTabStop" Value="False" />
                 <Style.Triggers>
@@ -342,6 +344,43 @@
                     </MultiDataTrigger>
                 </Style.Triggers>
             </Style>
+            <Style x:Key="HideValidateGridStyle" TargetType="{x:Type ColumnDefinition}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Text.Length,ElementName=VaultLocationPath,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource MoreThanZeroConverter}}" Value="True">
+                        <Setter Property="Width" Value="0" ></Setter>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Text.Length,ElementName=VaultLocationPath,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource MoreThanZeroConverter}}" Value="False">
+                        <Setter Property="Width" Value="20" ></Setter>
+                    </DataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Text.Length,ElementName=VaultLocationPath,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource MoreThanZeroConverter}}" Value="True"></Condition>
+                            <Condition Binding="{Binding IsMapFolderMiss}" Value="True"></Condition>
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="Width" Value="20" ></Setter>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="DisableShowLocationBtnStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource ThemedButtonStyle}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsMapFolderMiss}" Value="True">
+                        <Setter Property="IsEnabled" Value="False" ></Setter>
+                        <Setter Property="Foreground" Value="Red" ></Setter>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Text.Length,ElementName=VaultLocationPath,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource MoreThanZeroConverter}}" Value="False">
+                        <Setter Property="IsEnabled" Value="False" ></Setter>
+                        <Setter Property="Foreground" Value="Red" ></Setter>
+                    </DataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding EditMode}" Value="True"></Condition>
+                            <Condition Binding="{Binding IsUnsaved}" Value="False"></Condition>
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="IsEnabled" Value="False"></Setter>
+                        <Setter Property="Foreground" Value="Red" ></Setter>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </WPF:DSWindow.Resources>
     <WPF:DSWindow.InputBindings>
@@ -360,6 +399,7 @@
             <ColumnDefinition/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Style="{StaticResource ResourceKey=HideValidateGridStyle}" />
         </Grid.ColumnDefinitions>
         <GroupBox x:Name="GroupFolder" Grid.ColumnSpan="2" Margin="-5,0,-5,5" BorderThickness="0" Header="{Binding UIString[LBL79], FallbackValue=Vault Location}" Grid.Column="1">
             <Grid Height="auto">
@@ -474,8 +514,6 @@
             <TextBox x:Name="FILENAME" Grid.Column="1" 	
                     Text="{WPF:ValidatedBinding Prop[DocNumber].Value}" IsEnabled="{Binding CreateMode}" IsReadOnly="{Binding EditMode}"
             		Visibility="{Binding NumSchmFieldsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=DSNumSchmsCtrl}" IsTabStop="False"/>
-            <Label x:Name="lblPath" Content="{Binding UIString[TLT1], FallbackValue=Local Path}" Grid.Row="1" ToolTip="{Binding PathAndFileNameHandler.Path}" />
-            <TextBox x:Name="txtPath" VerticalAlignment="Stretch" Text="{Binding PathAndFileNameHandler.Path}" Grid.Row="1" Grid.Column="1" ToolTip="{Binding PathAndFileNameHandler.Path}" IsReadOnly="True" IsEnabled="False" IsTabStop="False" />
         </Grid>
         <Grid x:Name="ButtonGrid" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Grid.Row="4" Grid.Column="1" Margin="0,15,3,0">
             <Grid.ColumnDefinitions>
@@ -507,6 +545,9 @@
             	Content="{Binding UIString[BTN3], FallbackValue=Options}" Height="24" IsDefault="True"/>
             <Button x:Name="btnHelp" Content="{Binding UIString[MSDCE_BTN1], FallbackValue=Help}" 
                     Command="{Binding PsCmd[mHelp(100)]}" Height="24" ToolTip="F1" />
+        </Grid>
+        <Grid Grid.Column="3" Grid.Row="0">
+            <Image Source="{Binding Converter={StaticResource errorProviderIconConverter}, ConverterParameter=Error}" Width="16" Height="16" ToolTip="{Binding ErrorToolTip, FallbackValue='The Vault location cannot be empty.'}" Margin="0,5,0,0"/>
         </Grid>
         <Grid x:Name="grdShortCutPane" Grid.RowSpan="5" ToolTip="{Binding UIString[MSDCE_TT24]}" Style="{StaticResource grdShortCutPaneStyle}" >
             <GroupBox x:Name="GroupShortcuts" Header="{Binding UIString[MSDCE_LBL88], FallbackValue=Shortcuts}" BorderThickness="0" Padding="0,0,0,-6" Margin="0,0,10,0">

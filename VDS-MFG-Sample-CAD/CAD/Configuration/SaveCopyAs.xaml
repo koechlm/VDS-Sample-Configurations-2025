@@ -174,17 +174,33 @@
                     <DataTrigger Binding="{Binding Text.Length,ElementName=VaultLocationPath,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource MoreThanZeroConverter}}" Value="False">
                         <Setter Property="Width" Value="20" ></Setter>
                     </DataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Text.Length,ElementName=VaultLocationPath,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource MoreThanZeroConverter}}" Value="True"></Condition>
+                            <Condition Binding="{Binding IsMapFolderMiss}" Value="True"></Condition>
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="Width" Value="20" ></Setter>
+                    </MultiDataTrigger>
                 </Style.Triggers>
             </Style>
             <Style x:Key="DisableShowLocationBtnStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource ThemedButtonStyle}">
                 <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsMapFolderMiss}" Value="True">
+                        <Setter Property="IsEnabled" Value="False" ></Setter>
+                        <Setter Property="Foreground" Value="Red" ></Setter>
+                    </DataTrigger>
                     <DataTrigger Binding="{Binding Text.Length,ElementName=VaultLocationPath,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource MoreThanZeroConverter}}" Value="False">
                         <Setter Property="IsEnabled" Value="False" ></Setter>
                         <Setter Property="Foreground" Value="Red" ></Setter>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding CreateMode}" Value="False">
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding EditMode}" Value="True"></Condition>
+                            <Condition Binding="{Binding IsUnsaved}" Value="False"></Condition>
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="IsEnabled" Value="False"></Setter>
                         <Setter Property="Foreground" Value="Red" ></Setter>
-                    </DataTrigger>
+                    </MultiDataTrigger>
                 </Style.Triggers>
             </Style>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />

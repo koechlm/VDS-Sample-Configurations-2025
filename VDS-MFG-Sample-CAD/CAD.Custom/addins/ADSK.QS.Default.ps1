@@ -1120,7 +1120,6 @@ function mAddShortCutByName([STRING] $mScName) {
 		$mNewSc.NavigationContext.URI = $newURI
 		#get the navigation folder's color		
 		$mFldr = $vault.DocumentService.FindFoldersByPaths(@($dsWindow.FindName("VaultLocationPath").Text))
-		$dsDiag.Inspect()
 		$mCatDef = $vault.CategoryService.GetCategoryById($mFldr[0].Cat.CatId)
 		$mFldrColor = [System.Drawing.Color]::FromArgb($mCatDef.Color)
 		#replace the ARGB colors in the template
