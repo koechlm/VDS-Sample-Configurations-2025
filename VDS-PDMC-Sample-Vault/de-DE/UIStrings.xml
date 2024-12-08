@@ -78,6 +78,8 @@
   <UIString ID="LBL75">Material</UIString>
   <UIString ID="LBL76">Bestandsnummer</UIString>
   <UIString ID="LBL77">Kein</UIString>
+  <UIString ID="LBL78">Build </UIString>
+  <UIString ID="LBL79">Tresor-Speicherort</UIString>
   <UIString ID="BTN1">OK</UIString>
   <UIString ID="BTN2">Abbrechen</UIString>
   <UIString ID="BTN3">Optionen</UIString>
@@ -115,6 +117,12 @@
   <UIString ID="MSG7">Das Bezeichnungsattribut für Menüoption {0} konnte nicht gefunden werden. Korrigieren Sie die Datei MenuDefinitions.xml, und starten Sie den Tresor erneut.</UIString>
   <UIString ID="MSG8">Das PS1File-Attribut für Menüoption {0} konnte nicht gefunden werden. Korrigieren Sie die Datei MenuDefinitions.xml, und starten Sie den Tresor erneut.</UIString>
   <UIString ID="MSG9">Das Positionsattribut für den Befehl Site {0} konnte nicht gefunden werden. Korrigieren Sie die Datei MenuDefinitions.xml, und starten Sie den Tresor erneut.</UIString>
+  <UIString ID="MSG10">Doppelter Dateiname</UIString>
+  <UIString ID="MSG11">Dieser Vorgang führt zu einem doppelten Dateinamen, '{0}'. Dateinamen im Tresor müssen eindeutig sein.</UIString>
+  <UIString ID="MSG12">Datei kann nicht erstellt werden</UIString>
+  <UIString ID="MSG13">Keine Vorlagendatei ausgewählt. Fügen Sie eine Vorlagendatei hinzu, und versuchen Sie es erneut.</UIString>
+  <UIString ID="MSG14">Die Datei kann nicht erstellt werden. Versuchen Sie es erneut.</UIString>
+  <UIString ID="MSG15">Vault-Speicherort nicht gefunden</UIString>
   <!--Messages used in AutoCAD.cfg and Inventor.cfg-->
   <UIString ID="CFG1">Kopie von</UIString>
   <UIString ID="CFG2">Kopie_von_</UIString>
@@ -133,6 +141,7 @@
   <UIString ID="VAL12">Eine Datei mit diesem Namen ist bereits unter diesem Pfad in Vault vorhanden. Wählen Sie einen anderen Namen.</UIString>
   <UIString ID="VAL13">Eine Datei mit diesem Namen ist bereits unter einem anderen Pfad in Vault vorhanden. Wählen Sie einen anderen Namen.</UIString>
   <UIString ID="VAL14">Eine Datei mit diesem Namen ist in diesem Pfad bereits in Vault vorhanden und von einem anderen Benutzer ausgecheckt.</UIString>
+  <UIString ID="VAL15">Das Feld darf keines der folgenden Zeichen enthalten: "/?&lt;&gt;\;*|</UIString>
   <!--AutoCAD title block attributes / file properties for dynamic properties-->
   <!--use to change display name for localization or user friendly naming-->
   <UIString ID="GEN-TITLE-DES1">Titel</UIString>
@@ -225,6 +234,9 @@
   
   <!--Strings used in tooltips-->
   <UIString ID="TLT1">Lokaler Pfad</UIString>
+  <UIString ID="TLT2">Tresor-Speicherort auswählen</UIString>
+  <UIString ID="TLT3">Der Tresor-Speicherort darf nicht leer sein.</UIString>
+  <UIString ID="TLT4">Der zugeordnete Tresor-Speicherort kann nicht gefunden werden. Stellen Sie sicher, dass der zugeordnete Ordner-Speicherort vorhanden ist.</UIString>
 
   <!--VDS-PDMC-Sample Multilang Strings Start for en-US database-->
   

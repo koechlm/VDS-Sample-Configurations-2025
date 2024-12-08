@@ -78,6 +78,8 @@
   <UIString ID="LBL75">Material</UIString>
   <UIString ID="LBL76">Stock Number</UIString>
   <UIString ID="LBL77">None</UIString>
+  <UIString ID="LBL78">Build </UIString>
+  <UIString ID="LBL79">Vault Location</UIString>
   <UIString ID="BTN1">OK</UIString>
   <UIString ID="BTN2">Cancel</UIString>
   <UIString ID="BTN3">Options</UIString>
@@ -115,6 +117,12 @@
   <UIString ID="MSG7">The label attribute for the menu item {0} could not be found. Please correct the file 'MenuDefinitions.xml' and restart the vault again.</UIString>
   <UIString ID="MSG8">The PS1File attribute for the menu item {0} could not be found. Please correct the file 'MenuDefinitions.xml' and restart the vault again.</UIString>
   <UIString ID="MSG9">The Location attribute for the command site {0} could not be found. Please correct the file 'MenuDefinitions.xml' and restart the vault again.</UIString>
+  <UIString ID="MSG10">Duplicate file name</UIString>
+  <UIString ID="MSG11">This operation will result in a duplicate file name, '{0}'. File names must be unique throughout the Vault.</UIString>
+  <UIString ID="MSG12">Can’t create file</UIString>
+  <UIString ID="MSG13">The template file isn’t selected. Please add a template file and try again.</UIString>
+  <UIString ID="MSG14">The file can’t be created. Please try again.</UIString>
+  <UIString ID="MSG15">Can't find the Vault location</UIString>
   <!--Messages used in AutoCAD.cfg and Inventor.cfg-->
   <UIString ID="CFG1">Copy of</UIString>
   <UIString ID="CFG2">Copy_of_</UIString>
@@ -201,7 +209,12 @@
   <UIString ID="CAT5">Folder</UIString>
   <UIString ID="CAT6">Project</UIString>
 
+  <!--Strings used in tooltips-->
   <UIString ID="TLT1">Local path</UIString>
+  <UIString ID="TLT2">Select Vault Location</UIString>
+  <UIString ID="TLT3">The Vault location can't be empty.</UIString>
+  <UIString ID="TLT4">The mapped Vault location can't be found. Please ensure the mapped folder location exists.</UIString>
+  
 
   <!--VDS Sample Multilang Strings Start-->
 
