@@ -132,12 +132,12 @@ function InitializeRevisionValidation {
 					if ($Prop["Date Checked"]) {
 						$Prop["Date Checked"].CustomValidation = { ValidateRevisionField $Prop["Date Checked"] }
 					}
-					if ($Prop["Engr Approved By"]) {
+					<#if ($Prop["Engr Approved By"]) {
 						$Prop["Engr Approved By"].CustomValidation = { ValidateRevisionField $Prop["Engr Approved By"] }
 					}
 					if ($Prop["Engr Date Approved"]) {
 						$Prop["Engr Date Approved"].CustomValidation = { ValidateRevisionField $Prop["Engr Date Approved"] }
-					}
+					} #>
 					if ($Prop["Change Descr"]) {
 						$Prop["Change Descr"].CustomValidation = { ValidateRevisionField $Prop["Change Descr"] }
 					}
@@ -234,12 +234,12 @@ function InitializeRevisionValidation {
 					if ($Prop["GEN-TITLE-CHKD"]) {
 						$Prop["GEN-TITLE-CHKD"].CustomValidation = { ValidateRevisionField $Prop["GEN-TITLE-CHKD"] }
 					}
-					if ($Prop["GEN-TITLE-ISSM"]) {
+					<#if ($Prop["GEN-TITLE-ISSM"]) {
 						$Prop["GEN-TITLE-ISSM"].CustomValidation = { ValidateRevisionField $Prop["GEN-TITLE-ISSM"] }
 					}
 					if ($Prop["GEN-TITLE-ISSD"]) {
 						$Prop["GEN-TITLE-ISSD"].CustomValidation = { ValidateRevisionField $Prop["GEN-TITLE-ISSD"] }
-					}
+					}#>
 					if ($Prop["Change Descr"]) {
 						$Prop["Change Descr"].CustomValidation = { ValidateRevisionField $Prop["Change Descr"] } #revision table property in PDMC-Sample
 					}
@@ -379,5 +379,4 @@ function ResetRevisionProperties {
 	if ($Prop["Customer Approved Date"]) {
 		$Prop["Customer Approved Date"].Value = ""
 	}
-
 }

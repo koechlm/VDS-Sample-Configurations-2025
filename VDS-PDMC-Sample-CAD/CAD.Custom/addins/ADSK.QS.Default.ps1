@@ -100,15 +100,13 @@ function InitializeWindow {
 				#support empty (no model view) documentation (DWG, IDW, IPN),  or a sketched 2D drawing (DWG, IDW)
 				$_ModelFullFileName = $_mInvHelpers.m_GetMainViewModelPath($Application)
 				#model documentation; note - during model copy/replace incl. drawing $_ModelFullFileName is null => check number of referenced files instead to differentiate from sketch only drawings.				
-				If ($global:mIsInvDocumentationFile -eq $true -and $Prop["_GenerateFileNumber4SpecialFiles"].Value -eq $false -and $Document.ReferencedFiles.Count -gt 0) { 
-					$dsWindow.FindName("BreadCrumb").IsEnabled = $false
+				If ($global:mIsInvDocumentationFile -eq $true -and $Prop["_GenerateFileNumber4SpecialFiles"].Value -eq $false -and $Document.ReferencedFiles.Count -gt 0) {
 					$dsWindow.FindName("GroupFolder").Visibility = "Collapsed"
 					$dsWindow.FindName("grdShortCutPane").Visibility = "Collapsed"
 				}
 				#sketched or empty drawing
 				Else {
-					$Prop["_GenerateFileNumber4SpecialFiles"].Value = $true #override the application settings for 
-					$dsWindow.FindName("BreadCrumb").IsEnabled = $true
+					$Prop["_GenerateFileNumber4SpecialFiles"].Value = $true #override the application settings for
 					$dsWindow.FindName("chkBxIsInvDocuFileType").IsChecked = $false
 				}				
 			}
@@ -165,8 +163,7 @@ function InitializeWindow {
 					$dsWindow.FindName("Categories").add_SelectionChanged({
 							If ($Prop["_Category"].Value -eq "Factory Asset" -and $Document.FileSaveCounter -eq 0) {
 								#don't localize name according FDU fixed naming
-								$paths = @("Factory Asset Library Source")
-								mActivateBreadCrumbCmbs $paths
+								$Prop["Folder"].Value = "Factory Asset Library Source"
 								$dsWindow.FindName("NumSchms").SelectedIndex = 1
 							}
 						})
