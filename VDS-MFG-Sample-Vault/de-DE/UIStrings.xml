@@ -208,8 +208,12 @@
   <UIString ID="CAT4">Basis</UIString>
   <UIString ID="CAT5">Ordner</UIString>
   <UIString ID="CAT6">Projekt</UIString>
+  
   <!--Strings used in tooltips-->
   <UIString ID="TLT1">Lokaler Pfad</UIString>
+  <UIString ID="TLT2">Tresor-Speicherort auswählen</UIString>
+  <UIString ID="TLT3">Der Tresor-Speicherort darf nicht leer sein.</UIString>
+  <UIString ID="TLT4">Der zugeordnete Tresor-Speicherort kann nicht gefunden werden. Stellen Sie sicher, dass der zugeordnete Ordner-Speicherort vorhanden ist.</UIString>
 
   <!--VDS Sample Multilang Strings Start-->
 
