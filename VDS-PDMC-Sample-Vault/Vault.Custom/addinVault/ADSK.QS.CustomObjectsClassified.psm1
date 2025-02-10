@@ -60,7 +60,7 @@ function mInitializeTermCatalog
 				})
 
 				#close the expander as another property is selected 
-					$dsWindow.FindName("DSDynamicCategoryProperties").add_GotFocus({
+				$dsWindow.FindName("DSDynamicCategoryProperties").add_GotFocus({
 					$dsWindow.FindName("expTermSearch").Visibility = "Collapsed"
 					$dsWindow.FindName("expTermSearch").IsExpanded = $false
 					$dsWindow.FindName("btnSearchTerm").IsDefault = $false
@@ -386,6 +386,16 @@ function m_SelectTerm {
 	}
 	
 	$dsWindow.FindName("tabProperties").IsSelected = $true
+
+	#close the expander if available
+	Try{
+		$dsWindow.FindName("expTermSearch").Visibility = "Collapsed"
+		$dsWindow.FindName("expTermSearch").IsExpanded = $false
+		$dsWindow.FindName("btnSearchTerm").IsDefault = $false
+	}
+	Catch { 
+		$dsDiag.Trace("The expander TermCatalog is not present. Contact your VDS administrator.")
+	}
 }
 
 #endregion CatalogLookUp

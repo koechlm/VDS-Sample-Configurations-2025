@@ -188,7 +188,7 @@
         <KeyBinding Key="F1" Command="{Binding PsCmd[mHelp(600)]}"/>
     </WPF:MainWindow.InputBindings>
     <TabControl>
-        <TabItem Name="tabFolderProperties" Header="{Binding UIString[MSDCE_MultiTab_01], FallbackValue=Properties}">
+        <TabItem x:Name="tabProperties" Header="{Binding UIString[MSDCE_MultiTab_01], FallbackValue=Properties}">
             <AdornerDecorator>
                 <Grid x:Name="grdMain" Margin="5">
                     <Grid.RowDefinitions>
