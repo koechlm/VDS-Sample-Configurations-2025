@@ -94,6 +94,7 @@ function mGetNewFileParentFldrByCat ([string] $Category) {
 		$mPath = $mWfVault + $mPath
 		$mPath = $mPath.Replace(".\", "")
 		$mPath = $mPath.Replace("\", "/")
+		$mPath = $mPath.Replace("//", "/")
 		$mFld = $vault.DocumentService.GetFolderByPath($mPath)
 		#the loop to get the next parent project category folder; skip if you don't look for projects
 		IF ($mFld.Cat.CatName -eq $UIString[$Category]) { $mFldrFound = $true }

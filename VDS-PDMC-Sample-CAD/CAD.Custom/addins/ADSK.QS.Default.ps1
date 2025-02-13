@@ -15,7 +15,13 @@ function InitializeWindow {
 
 	#new folder selection 2025.2 ++
 	#It will set the Folder to be the LastSelectedFolder value
-    SetFolderByLastSelectedPath
+	# set a preference for suggested Vault path, e.g. the model's path for a drawing
+	if ($Prop["_SuggestedVaultPath"].Value -ne "") {
+		$Prop["Folder"].Value = $Prop["_SuggestedVaultPath"].Value		
+	}
+	else {
+		SetFolderByLastSelectedPath
+	}
 
 	# leverage the current theme variable in theme dependent path names etc.
 	$Global:currentTheme = [Autodesk.DataManagement.Client.Framework.Forms.SkinUtils.WinFormsTheme]::Instance.CurrentTheme
@@ -397,6 +403,7 @@ function SetFolderByLastSelectedPath() {
         $Prop["Folder"].Value = ""
         return
     }
+
     $lastFolderPath = GetLastSelectedPath
     #it needs to do check when switching the mapfoler 
     if ((IsPathBelow $lastFolderPath $rootFolder.FullName ) -eq $false) {
@@ -975,15 +982,19 @@ function mFillMyScTree {
 function mAddTreeNode($XmlNode, $TreeLevel, $EnableDelete) {
 	if ($XmlNode.LocalName -eq "Shortcut") {		
 		if (($XmlNode.NavigationContextType -eq "Connectivity.Explorer.Document.DocFolder")) {
-			#add the shortcut to the dictionary for instant read on selection change
-			$Global:m_ScDict.Add($XmlNode.Name, $XmlNode.NavigationContext.URI)				
-			#create a tree node
-			$IconSource = mGetIconSource($XmlNode.ImageMetaData)
-			$child = [TreeNode]::new($XmlNode.Name, $IconSource)
-			if ($true -eq $EnableDelete) {
-				$child.DeleteEnabled = $true
-			}			
-			$TreeLevel.AddChild($child)
+			Try {
+				#add the shortcut to the dictionary for instant read on selection change
+				$Global:m_ScDict.Add($XmlNode.Name, $XmlNode.NavigationContext.URI)				
+				#create a tree node
+				$IconSource = mGetIconSource($XmlNode.ImageMetaData)
+				$child = [TreeNode]::new($XmlNode.Name, $IconSource)
+				if ($true -eq $EnableDelete) {
+					$child.DeleteEnabled = $true
+				}			
+				$TreeLevel.AddChild($child)
+			}
+			Catch {
+			}
 		}
 	}
 	if ($XmlNode.LocalName -eq "ShortcutGroup") {
