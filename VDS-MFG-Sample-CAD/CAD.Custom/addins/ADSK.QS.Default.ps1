@@ -14,8 +14,13 @@ function InitializeWindow {
 	$Global:mCategories = GetCategories
 
 	#new folder selection 2025.2 ++
-	#It will set the Folder to be the LastSelectedFolder value
-    SetFolderByLastSelectedPath
+	# set a preference for suggested Vault path, e.g. the model's path for a drawing
+	if ($Prop["_SuggestedVaultPath"].Value -ne "") {
+		$Prop["Folder"].Value = $Prop["_SuggestedVaultPath"].Value		
+	}
+	else {
+		SetFolderByLastSelectedPath
+	}
 
 	# leverage the current theme variable in theme dependent path names etc.
 	$Global:currentTheme = [Autodesk.DataManagement.Client.Framework.Forms.SkinUtils.WinFormsTheme]::Instance.CurrentTheme
