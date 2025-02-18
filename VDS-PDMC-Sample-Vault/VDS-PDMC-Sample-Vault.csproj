@@ -34,6 +34,26 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autodesk.Connectivity.WebServices">
       <HintPath>..\SDK Refs\2025.NET48\Autodesk.Connectivity.WebServices.dll</HintPath>
@@ -324,6 +344,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Vault.Custom\VLTM-2023.0.0.F-icon.ico" />
     <Resource Include="de-DE\PropertyTranslations.xml" />
     <Resource Include="de-DE\UIStrings.xml" />
     <Resource Include="en-US\PropertyTranslations.xml" />
@@ -839,7 +860,6 @@
     <Resource Include="Vault.Custom\user-w-edit.ico" />
     <Resource Include="Vault.Custom\user-w-info.ico" />
     <Resource Include="Vault.Custom\user-w.ico" />
-    <Resource Include="Vault.Custom\Vault.ico" />
     <Resource Include="Vault.Custom\VaultRefreshFromVault.ico" />
     <Resource Include="Vault.Custom\VaultSearchClear.ico" />
     <Resource Include="Vault.Custom\VaultSearchExec.ico" />
