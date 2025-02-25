@@ -4126,6 +4126,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -7919,7 +7927,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:VdsSampleUtilities, Version=2025.1.0.0, Culture=neutral, PublicKeyToken=b22d7b6c14b79ec9, processorArchitecture=AMD64"
+            "AssemblyAsmDisplayName" = "8:VdsSampleUtilities, Version=2025.1.1.0, Culture=neutral, PublicKeyToken=b22d7b6c14b79ec9, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_46C8A1B248C3496A89D9055AFDBE0DB2"
@@ -18345,15 +18353,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Autodesk Vault | VDS-PDMC-Sample Configuration 2025"
-        "ProductCode" = "8:{91F2E256-982B-4F93-B49F-9C0EBD30C245}"
-        "PackageCode" = "8:{477D695D-8D26-48A0-95A2-EF3B69EEE1B8}"
+        "ProductCode" = "8:{E8DFC7D3-ED9A-456B-B8F7-A3D9189A9EE0}"
+        "PackageCode" = "8:{B123DB43-8432-43D8-9152-C116226D0CE8}"
         "UpgradeCode" = "8:{D3B536B0-747A-4D24-A4BD-2D981EE88792}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.2.2025"
+        "ProductVersion" = "8:2.2.2025"
         "Manufacturer" = "8:Autodesk, Technical Sales CE"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/koechlm/VDs-Sample-Configurations-2025"

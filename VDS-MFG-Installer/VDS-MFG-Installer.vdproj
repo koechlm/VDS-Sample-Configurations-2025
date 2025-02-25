@@ -3520,6 +3520,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
     }
@@ -4694,7 +4702,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:VdsSampleUtilities, Version=2025.1.0.0, Culture=neutral, PublicKeyToken=b22d7b6c14b79ec9, processorArchitecture=AMD64"
+            "AssemblyAsmDisplayName" = "8:VdsSampleUtilities, Version=2025.1.1.0, Culture=neutral, PublicKeyToken=b22d7b6c14b79ec9, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_1A05534F466D4B61BC678C38F6D45C14"
@@ -15515,15 +15523,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Autodesk Vault | VDS-MFG-Sample Configuration 2025"
-        "ProductCode" = "8:{131E32E7-5E6F-4A60-A343-D9E12E7A640E}"
-        "PackageCode" = "8:{23A70F39-F0C5-4228-A6F9-4E303C306719}"
+        "ProductCode" = "8:{70826E92-D9F6-4BEE-9776-C4097D30E4DD}"
+        "PackageCode" = "8:{F3028A57-B63D-4B41-B1B4-B55603712431}"
         "UpgradeCode" = "8:{C2B5CF88-E568-43E0-B9DE-8108591C4353}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.2.2025"
+        "ProductVersion" = "8:2.2.2025"
         "Manufacturer" = "8:Autodesk, Technical Sales CE"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/koechlm/VDS-Sample-Configurations-2025"
