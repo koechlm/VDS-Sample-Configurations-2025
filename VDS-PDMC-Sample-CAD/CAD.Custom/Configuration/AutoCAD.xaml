@@ -9,7 +9,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
     Style="{DynamicResource ThemedWindowStyle}"
-    x:Name="AutoCADWindow" ShowInTaskbar="True" ResizeMode="NoResize" SizeToContent="WidthAndHeight" >
+    x:Name="AutoCADWindow" ShowInTaskbar="True" ResizeMode="NoResize" SizeToContent="WidthAndHeight" MaxHeight="800" >
     <WPF:DSWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -680,7 +680,7 @@
                         <Image x:Name="btnNewScImg" Style="{StaticResource btnScImage}"/>
                     </Button>
                     <Border Grid.Row="1" MinWidth="180" Grid.ColumnSpan="2" >
-                        <TreeView x:Name="ScTree" SelectedValuePath="Key" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <TreeView x:Name="ScTree" SelectedValuePath="Key" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top">
                             <TreeView.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Remove" Command="{Binding PsCmd[mRemoveSc]}">
