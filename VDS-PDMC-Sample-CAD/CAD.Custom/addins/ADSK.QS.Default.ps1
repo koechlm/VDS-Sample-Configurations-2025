@@ -1118,7 +1118,6 @@ function mReadUserShortcuts {
 	return $global:m_ScXML
 }
 
-
 function  mClickScTreeItem {
 	try {
 		$_key = $dsWindow.FindName("ScTree").SelectedItem.Name
@@ -1129,7 +1128,9 @@ function  mClickScTreeItem {
 			}
 			else{
 				$_Val = $Global:m_ScDict.get_item($_key).Replace($Prop["_WorkspacePath"].Value.Replace("\", "/"), "")
-
+			}
+			if ($_Val -eq "vaultfolderpath:$") {
+					$_Val = $_Val.Replace("vaultfolderpath:$", "")
 			}
 			$Prop["Folder"].Value = $_Val.Replace("vaultfolderpath:$/", "")
 		}

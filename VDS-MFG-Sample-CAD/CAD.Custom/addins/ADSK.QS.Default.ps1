@@ -928,15 +928,18 @@ function mFillMyScTree {
 function mAddTreeNode($XmlNode, $TreeLevel, $EnableDelete) {
 	if ($XmlNode.LocalName -eq "Shortcut") {		
 		if (($XmlNode.NavigationContextType -eq "Connectivity.Explorer.Document.DocFolder")) {
-			#add the shortcut to the dictionary for instant read on selection change
-			$Global:m_ScDict.Add($XmlNode.Name, $XmlNode.NavigationContext.URI)				
-			#create a tree node
-			$IconSource = mGetIconSource($XmlNode.ImageMetaData)
-			$child = [TreeNode]::new($XmlNode.Name, $IconSource)
-			if ($true -eq $EnableDelete) {
-				$child.DeleteEnabled = $true
-			}			
-			$TreeLevel.AddChild($child)
+			Try {
+				#add the shortcut to the dictionary for instant read on selection change
+				$Global:m_ScDict.Add($XmlNode.Name, $XmlNode.NavigationContext.URI)				
+				#create a tree node
+				$IconSource = mGetIconSource($XmlNode.ImageMetaData)
+				$child = [TreeNode]::new($XmlNode.Name, $IconSource)
+				if ($true -eq $EnableDelete) {
+					$child.DeleteEnabled = $true
+				}			
+				$TreeLevel.AddChild($child)
+			}
+			Catch {}
 		}
 	}
 	if ($XmlNode.LocalName -eq "ShortcutGroup") {
@@ -1062,7 +1065,9 @@ function  mClickScTreeItem {
 			}
 			else{
 				$_Val = $Global:m_ScDict.get_item($_key).Replace($Prop["_WorkspacePath"].Value.Replace("\", "/"), "")
-
+			}
+			if ($_Val -eq "vaultfolderpath:$") {
+					$_Val = $_Val.Replace("vaultfolderpath:$", "")
 			}
 			$Prop["Folder"].Value = $_Val.Replace("vaultfolderpath:$/", "")
 		}
