@@ -13,15 +13,8 @@ function InitializeWindow {
 	$dsWindow.Title = SetWindowTitle
 	$Global:mCategories = GetCategories
 
-	#new folder selection 2025.2 ++
-	# set a preference for suggested Vault path, e.g. the model's path for a drawing
-	$DC = $dsWindow.DataContext
-	if (-not [String]::IsNullOrEmpty($DC.PathAndFileNameHandler.SuggestedVaultPath)) {
-		$Prop["Folder"].Value = $DC.PathAndFileNameHandler.SuggestedVaultPath	
-	}
-	else {
-		SetFolderByLastSelectedPath
-	}	
+	# set a preference for suggested Vault path, e.g. the model's path for a drawing or the last used one
+	SetFolderPath
 
 	# leverage the current theme variable in theme dependent path names etc.
 	$Global:currentTheme = [Autodesk.DataManagement.Client.Framework.Forms.SkinUtils.WinFormsTheme]::Instance.CurrentTheme
@@ -395,6 +388,17 @@ function InitializeWindow {
 	
 	#$dsDiag.Trace("... Initialize window end <<")
 }#end InitializeWindow
+
+function SetFolderPath() {
+	# set a preference for the suggested Vault path, otherwise preset the last used folder
+    $DC = $dsWindow.DataContext
+    if (-not [String]::IsNullOrEmpty($DC.PathAndFileNameHandler.SuggestedVaultPath)) {
+        $Prop["Folder"].Value = $DC.PathAndFileNameHandler.SuggestedVaultPath 
+    }
+    else {
+        SetFolderByLastSelectedPath
+    }
+}
 
 function SetFolderByLastSelectedPath() {
     $rootFolder = GetVaultRootFolder

@@ -5,8 +5,8 @@ function InitializeWindow
     $dsWindow.Title = SetWindowTitle		
     InitializeCategory
     InitializeNumSchm
-    #It will set the Folder to be the LastSelectedFolder value
-    SetFolderByLastSelectedPath
+    # set a preference for suggested Vault path, e.g. the model's path for a drawing or the last used one
+    SetFolderPath
     InitializeFileNameValidation
 	#end rules applying commonly
 	$mWindowName = $dsWindow.Name
@@ -25,6 +25,18 @@ function InitializeWindow
 		}
 	}
 }
+
+function SetFolderPath() {
+	# set a preference for the suggested Vault path, otherwise preset the last used folder
+    $DC = $dsWindow.DataContext
+    if (-not [String]::IsNullOrEmpty($DC.PathAndFileNameHandler.SuggestedVaultPath)) {
+        $Prop["Folder"].Value = $DC.PathAndFileNameHandler.SuggestedVaultPath 
+    }
+    else {
+        SetFolderByLastSelectedPath
+    }
+}
+
 function SetFolderByLastSelectedPath() {
     $rootFolder = GetVaultRootFolder
     if($rootFolder -eq $null){
