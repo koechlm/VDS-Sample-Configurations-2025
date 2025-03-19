@@ -54,7 +54,7 @@ function mFindCustent($CustentName, $Category)
 	$propDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("CUSTENT")
 		
 	#condition 1
-	$propDef = $propDefs | Where-Object { $_.DispName -eq "Name" }
+	$propDef = $propDefs | Where-Object { $_.SysName -eq "Name" }
 	$srchCond = New-Object autodesk.Connectivity.WebServices.SrchCond
 	$srchCond.PropDefId = $propDef.Id
 	$srchCond.SrchOper = 3
@@ -65,7 +65,7 @@ function mFindCustent($CustentName, $Category)
 	$mSrchCndtns += $srchCond
 		
 	#condition 2
-	$propDef = $propDefs | Where-Object { $_.DispName -eq "Category Name" }
+	$propDef = $propDefs | Where-Object { $_.SysName -eq "CategoryName" }
 	$srchCond = New-Object autodesk.Connectivity.WebServices.SrchCond
 	$srchCond.PropDefId = $propDef.Id
 	$srchCond.SrchOper = 3

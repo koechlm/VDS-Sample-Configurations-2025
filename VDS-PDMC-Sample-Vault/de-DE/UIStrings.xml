@@ -470,6 +470,11 @@
   <UIString ID="Adsk.QS.ClassLevel_02">Gruppe</UIString>
   <UIString ID="Adsk.QS.ClassLevel_03">Untergruppe</UIString>
   <UIString ID="Adsk.QS.ClassLevel_04">Klasse</UIString>
+  <UIString ID="Adsk.QS.ClassLevel_STD">Standard</UIString>
+  <UIString ID="Adsk.QS.ClassLevel_CID">ID Nummer</UIString>
+  <UIString ID="Adsk.QS.ClassLevel_COD">Code</UIString>
+  <UIString ID="Adsk.QS.ClassLevel_CLK">Klassifikation Titel</UIString>
+  <UIString ID="Adsk.QS.ClassLevel_CLD">Klassifikation Code</UIString>
   <UIString ID="Adsk.QS.Classification_00">Klasse</UIString>
   <UIString ID="Adsk.QS.Classification_01">Name</UIString>
   <UIString ID="Adsk.QS.Classification_02">Wert</UIString>
@@ -486,6 +491,7 @@
   <UIString ID="Adsk.QS.Classification_13">Der Benutzerdefinierte Arbeitsbereich 'Klassen' steht nicht zur Verfügung. Wenden Sie sich an ihren Administrator.</UIString>
   <UIString ID="Adsk.QS.Classification_14">Klassifizierung d. primär verknüpften Datei</UIString>
   <UIString ID="Adsk.QS.Classification_15">Schreibgeschützt: Wert wird aus Hierarchiepfad übernommen</UIString>
+  <UIString ID="Adsk.QS.Classification_16">Das Klassifizierungsobject ist nicht vorhanden. Bitte überprüfen sie die Definitionen!</UIString>
   <!--Classification end-->
 
   <!--CatalogTermsTranslations-->

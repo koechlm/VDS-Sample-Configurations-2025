@@ -57,6 +57,11 @@
   <PropertyTranslation Name="GROUP">Group</PropertyTranslation>
   <PropertyTranslation Name="SUBGROUP">Sub Group</PropertyTranslation>
   <PropertyTranslation Name="CLASS">Class</PropertyTranslation>
+  <PropertyTranslation Name="CLASSID">Code</PropertyTranslation>
+  <PropertyTranslation Name="CLASSTYPE">Standard</PropertyTranslation>
+  <PropertyTranslation Name="CLASSLINK">Classification Title</PropertyTranslation>
+  <PropertyTranslation Name="CLASSCODE">Classification Code</PropertyTranslation>
+  <PropertyTranslation Name="CLASSCDID">ID Number</PropertyTranslation>
   <!--VDS-PDMC-Sample Extension Classification end-->
 
   <!--CatalogTermsTranslations-->

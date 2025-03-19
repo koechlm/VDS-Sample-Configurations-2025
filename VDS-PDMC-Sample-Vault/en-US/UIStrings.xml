@@ -472,6 +472,11 @@
   <UIString ID="Adsk.QS.ClassLevel_02">Group</UIString>
   <UIString ID="Adsk.QS.ClassLevel_03">Sub Group</UIString>
   <UIString ID="Adsk.QS.ClassLevel_04">Class</UIString>
+  <UIString ID="Adsk.QS.ClassLevel_STD">Standard</UIString>
+  <UIString ID="Adsk.QS.ClassLevel_CID">ID Number</UIString>
+  <UIString ID="Adsk.QS.ClassLevel_COD">Code</UIString>
+  <UIString ID="Adsk.QS.ClassLevel_CLK">Classification Title</UIString>
+  <UIString ID="Adsk.QS.ClassLevel_CLD">Classification Code</UIString>
   <UIString ID="Adsk.QS.Classification_00">Class</UIString>
   <UIString ID="Adsk.QS.Classification_01">Name</UIString>
   <UIString ID="Adsk.QS.Classification_02">Value</UIString>
@@ -488,6 +493,7 @@
   <UIString ID="Adsk.QS.Classification_13">The custom workspace 'Classes' is not available. Contact your Administrator.</UIString>
   <UIString ID="Adsk.QS.Classification_14">Classification of Primary Linked File</UIString>
   <UIString ID="Adsk.QS.Classification_15">Read-Only: Values derive from breadcrumb selection</UIString>
+  <UIString ID="Adsk.QS.Classification_16">The class object doesn't exist please check your Classification definitions!</UIString>
   <!--Classification end-->
 
   <!--CatalogTermsTranslations-->
@@ -512,6 +518,8 @@
   <UIString ID="ClassTerms_14">Filter</UIString>
   <UIString ID="ClassTerms_15">Additional Languages</UIString>
   <UIString ID="ClassTerms_16">Search text to match term definition, use "*" and/or add Languages to widen the scope</UIString>
+  <UIString ID="ClassTerms_17">Manual input</UIString>
+  <UIString ID="ClassTerms_18">Comments DE</UIString>
   <UIString ID="ClassTerms_BTN8">Search</UIString>
   <UIString ID="ClassTerms_BTN9">Copy Term as Title</UIString>
   <UIString ID="ClassTerms_BTN10">Copy Term Data</UIString>
