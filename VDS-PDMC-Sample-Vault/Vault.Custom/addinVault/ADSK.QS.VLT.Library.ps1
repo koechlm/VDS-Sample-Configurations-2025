@@ -404,7 +404,7 @@ function mInheritProperties ($Id, $MappingTable) {
 	}	
 }
 
-function mGetAllFolderProperties ([long] $mFldID)
+function mGetAllFolderProperties ([long] $FolderId)
 {
 	$mResult = @{}
 	if (!$global:mFldrPropDefs) {
@@ -415,7 +415,7 @@ function mGetAllFolderProperties ([long] $mFldID)
 		$propDefIds += $_.Id
 	}	
 	$mEntIDs = @()
-	$mEntIDs += $mFldID
+	$mEntIDs += $FolderId
 	$mPropertyInstances = $vault.PropertyService.GetProperties("FLDR", $mEntIDs, $propDefIds)	
 	Foreach($mPropInst in $mPropertyInstances){		
 		$Name = ($mFldrPropDefs | Where-Object {$_.Id -eq $mPropInst.PropDefId}).DispName
@@ -423,6 +423,88 @@ function mGetAllFolderProperties ([long] $mFldID)
 	}	
 	Return $mResult
 }
+
+function mGetAllFileProperties ([long] $FileId)
+{
+	$mResult = @{}
+	if (!$global:mFilePropDefs) {
+		$global:mFilePropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("FILE")
+	}
+	$propDefIds = @()
+	$mFilePropDefs | ForEach-Object {
+		$propDefIds += $_.Id
+	}	
+	$mEntIDs = @()
+	$mEntIDs += $FileId
+	$mPropertyInstances = $vault.PropertyService.GetProperties("FILE", $mEntIDs, $propDefIds)	
+	Foreach($mPropInst in $mPropertyInstances){		
+		$Name = ($mFilePropDefs | Where-Object {$_.Id -eq $mPropInst.PropDefId}).DispName
+		$mResult.Add($Name, $mPropInst.Val)
+	}	
+	Return $mResult
+}
+
+function mGetAllItemProperties ([long] $ItemId)
+{
+	$mResult = @{}
+	if (!$global:mItemPropDefs) {
+		$global:mItemPropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("FILE")
+	}
+	$propDefIds = @()
+	$mItemPropDefs | ForEach-Object {
+		$propDefIds += $_.Id
+	}	
+	$mEntIDs = @()
+	$mEntIDs += $ItemId
+	$mPropertyInstances = $vault.PropertyService.GetProperties("ITEM", $mEntIDs, $propDefIds)	
+	Foreach($mPropInst in $mPropertyInstances){		
+		$Name = ($mItemPropDefs | Where-Object {$_.Id -eq $mPropInst.PropDefId}).DispName
+		$mResult.Add($Name, $mPropInst.Val)
+	}	
+	Return $mResult
+}
+
+function mGetAllChangeOrderProperties ([long] $mChangeOrderId)
+{
+	$mResult = @{}
+	if (!$global:mCoPropDefs) {
+		$global:mCoPropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("CO")
+	}
+	$propDefIds = @()
+	$mCoPropDefs | ForEach-Object {
+		$propDefIds += $_.Id
+	}	
+	$mEntIDs = @()
+	$mEntIDs += $mChangeOrderId
+	$mPropertyInstances = $vault.PropertyService.GetProperties("CO", $mEntIDs, $propDefIds)	
+	Foreach($mPropInst in $mPropertyInstances){		
+		$Name = ($mCoPropDefs | Where-Object {$_.Id -eq $mPropInst.PropDefId}).DispName
+		$mResult.Add($Name, $mPropInst.Val)
+	}	
+	Return $mResult
+}
+
+function mGetAllCustentProperties ([long] $CustentId)
+{
+	$mResult = @{}
+	if (!$global:mCustentPropDefs) {
+		$global:mCustentPropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("CUSTENT")
+	}
+	$propDefIds = @()
+	$mCustentPropDefs | ForEach-Object {
+		$propDefIds += $_.Id
+	}	
+	$mEntIDs = @()
+	$mEntIDs += $CustentId
+	$mPropertyInstances = $vault.PropertyService.GetProperties("CUSTENT", $mEntIDs, $propDefIds)	
+	Foreach($mPropInst in $mPropertyInstances){		
+		$Name = ($mCustentPropDefs | Where-Object {$_.Id -eq $mPropInst.PropDefId}).DispName
+		$mResult.Add($Name, $mPropInst.Val)
+	}	
+	Return $mResult
+}
+
+
 
 #create folder structure based on a template;
 function mRecursivelyCreateFolders($sourceFolder, $targetFolder, $inclACL)
