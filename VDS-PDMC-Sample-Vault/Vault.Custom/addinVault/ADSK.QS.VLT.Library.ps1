@@ -5,7 +5,8 @@
 # Accordingly, those configuration samples are provided as is with no warranty of any kind, and you use the applications at your own risk.
 
 
-#retrieve property value given by displayname from folder (ID)
+# retrieve property value given by displayname from folder (ID)
+# don't use repeatetly for multiple properties and use the mGetAllFolderProperties method instead
 function mGetFolderPropValue ([Int64] $mFldID, [STRING] $mDispName)
 {
 	$PropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("FLDR")
@@ -65,7 +66,8 @@ function mGetFolderPropertyDefId ([STRING] $mDispName) {
 	return mGetPropertyDefId $mDispName "FLDR"
 }
 
-#retrieve property value given by displayname from Custom Object (ID)
+# retrieve property value given by displayname from Custom Object (ID)
+# don't use repeatetly for multiple properties and use the mGetAllCustentProperties method instead
 function mGetCustentPropValue ([Int64] $mCentID, [STRING] $mDispName)
 {
 	$PropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("CUSTENT")
@@ -111,7 +113,7 @@ function mGetCategoryDef ([String] $mEntType, [String] $mDispName)
 	return $mEntCatId
 }
 
-#update single property. Parameters: Folder ID, UDP display name and UDP value
+#update a folder property (single). Parameters: Folder ID, UDP display name and UDP value
 function mUpdateFldrProperties([Long] $FldId, [String] $mDispName, [Object] $mVal)
 {
 	$ent_idsArray = @()
@@ -130,8 +132,8 @@ function mUpdateFldrProperties([Long] $FldId, [String] $mDispName, [Object] $mVa
     catch { return $false}
 }
 
-
-function mUpdateCustentProperty([Long] $CustentId, [String] $mDispName, [Object] $mVal)
+# update a Custom Object (custent) property (single).
+function mUpdateCustentProperties([Long] $CustentId, [String] $mDispName, [Object] $mVal)
 {
 	$ent_idsArray = @()
 	$ent_idsArray += $CustentId
@@ -217,6 +219,8 @@ function mGetUIOverride
 	}
 	return $mLCode
 }
+
+# client and server (database) languages may differ; read the enforced language code to capture multilanguage labels
 function mGetDBOverride
 {
 	[xml]$mDSLangFile = Get-Content "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault\DSLanguages.xml"
@@ -231,6 +235,8 @@ function mGetDBOverride
 	return $mLCode
 }
 
+# not all VDS powershell runspaces provide the multi-language labels $UIStrings
+# call this function in case $UIStrings[] key value pairs are needed but not available
 function mGetUIStrings
 {
 	# check language override settings of VDS
@@ -247,13 +253,18 @@ function mGetUIStrings
 	Foreach ($xmlAttr in $xmlUIStrs) {
 		$mKey = $xmlAttr.ID
 		$mValue = $xmlAttr.InnerXML
-		$UIString.Add($mKey, $mValue)
+		try{
+			$UIString.Add($mKey, $mValue)
 		}
+		catch{
+			[Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowError("Failed adding this UIString $mKey; please check the source file for duplicate keys." , "Vault VDS Client")
+		}
+	}
 	return $UIString
 }
 
 # VDS Dialogs and Tabs share property name translations $Prop[_XLTN_*] according DSLanguage.xml override or default powerShell UI culture;
-# VDS MenuCommand scripts don't read as a default; call this function in case $UIString[] key value pairs are needed
+# VDS MenuCommand scripts don't read as a default; call this function in case $PropertyTranslations[] key value pairs are needed
 function mGetPropTranslations
 {
 	# check language override settings of VDS
@@ -272,8 +283,13 @@ function mGetPropTranslations
 	Foreach ($xmlAttr in $xmlPrpTrnsltns) {
 		$mKey = $xmlAttr.Name
 		$mValue = $xmlAttr.InnerXML
-		$mPrpTrnsltns.Add($mKey, $mValue)
+		try {
+			$mPrpTrnsltns.Add($mKey, $mValue)
 		}
+		catch{
+			[Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowError("Failed adding the Property Translation $mKey; please check the source file for duplicate keys." , "Vault VDS Client")
+		}		
+	}
 	return $mPrpTrnsltns
 }
 
@@ -393,6 +409,7 @@ function mSearchCustentOfCat([String]$mCatDispName)
 	}
 }
 
+# read a parent folder's (Id) properties and copy values to the current file's properties listed in the mapping table
 function mInheritProperties ($Id, $MappingTable) {
 	#read the source entity's properties
 	$mFldProps = @{}
@@ -404,6 +421,8 @@ function mInheritProperties ($Id, $MappingTable) {
 	}	
 }
 
+# read all properties for a single folder
+# returns a name/value map (dictionary) using the UDP's displayname as the key
 function mGetAllFolderProperties ([long] $FolderId)
 {
 	$mResult = @{}
@@ -424,6 +443,8 @@ function mGetAllFolderProperties ([long] $FolderId)
 	Return $mResult
 }
 
+# read all properties for a single file (iteration)
+# returns a name/value map (dictionary) using the UDP's displayname as the key
 function mGetAllFileProperties ([long] $FileId)
 {
 	$mResult = @{}
@@ -444,6 +465,8 @@ function mGetAllFileProperties ([long] $FileId)
 	Return $mResult
 }
 
+# read all properties for a single item (iteration)
+# returns a name/value map (dictionary) using the UDP's displayname as the key
 function mGetAllItemProperties ([long] $ItemId)
 {
 	$mResult = @{}
@@ -464,6 +487,8 @@ function mGetAllItemProperties ([long] $ItemId)
 	Return $mResult
 }
 
+# read all properties for a single change order
+# returns a name/value map (dictionary) using the UDP's displayname as the key
 function mGetAllChangeOrderProperties ([long] $mChangeOrderId)
 {
 	$mResult = @{}
@@ -484,6 +509,8 @@ function mGetAllChangeOrderProperties ([long] $mChangeOrderId)
 	Return $mResult
 }
 
+# read all properties for a single custom object
+# returns a name/value map (dictionary) using the UDP's displayname as the key
 function mGetAllCustentProperties ([long] $CustentId)
 {
 	$mResult = @{}
@@ -503,7 +530,6 @@ function mGetAllCustentProperties ([long] $CustentId)
 	}	
 	Return $mResult
 }
-
 
 
 #create folder structure based on a template;

@@ -5,7 +5,8 @@
 # Accordingly, those configuration samples are provided as is with no warranty of any kind, and you use the applications at your own risk.
 
 
-#retrieve property value given by displayname from folder (ID)
+# retrieve property value given by displayname from folder (ID)
+# don't use repeatetly for multiple properties and use the mGetAllFolderProperties method instead
 function mGetFolderPropValue ([Int64] $mFldID, [STRING] $mDispName) {
 	$PropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("FLDR")
 	$propDefIds = @()
@@ -22,8 +23,9 @@ function mGetFolderPropValue ([Int64] $mFldID, [STRING] $mDispName) {
 	Return $mPropVal
 }
 
-#get all property/value pairs of a folder
-function mGetAllFolderProperties ([long] $mFldID)
+# read all properties for a single folder
+# returns a name/value map (dictionary) using the UDP's displayname as the key
+function mGetAllFolderProperties ([long] $FldID)
 {
 	$mResult = @{}
 	if (!$global:mFldrPropDefs) {
@@ -43,6 +45,7 @@ function mGetAllFolderProperties ([long] $mFldID)
 	Return $mResult
 }
 
+# read a parent folder's (Id) properties and copy values to the current file's properties listed in the mapping table
 function mInheritProperties ($Id, $MappingTable) {
 	#read the source entity's properties
 	$mFldProps = @{}
@@ -122,7 +125,6 @@ function mGetNewFileParentFldrByCat ([string] $Category) {
 
 # VDS Dialogs and Tabs share property name translations $Prop[_XLTN_*] according DSLanguage.xml override or default powerShell UI culture;
 # VDS MenuCommand scripts don't read as a default; call this function in case $UIString[] key value pairs are needed
-
 function mGetUIOverride {
 	# check language override settings of VDS
 	[xml]$mDSLangFile = Get-Content "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault\DSLanguages.xml"
@@ -136,6 +138,7 @@ function mGetUIOverride {
 	return $mLCode
 }
 
+# client and server (database) languages may differ; read the enforced language code to capture multilanguage labels
 function mGetDBOverride {
 	# check language override settings of VDS
 	[xml]$mDSLangFile = Get-Content "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault\DSLanguages.xml"
@@ -149,6 +152,8 @@ function mGetDBOverride {
 	return $mLCode
 }
 
+# VDS Dialogs and Tabs share property name translations $Prop[_XLTN_*] according DSLanguage.xml override or default powerShell UI culture;
+# VDS MenuCommand scripts don't read as a default; call this function in case $PropertyTranslations[] key value pairs are needed
 function mGetPropTranslations {
 	# check language override settings of VDS
 	[xml]$mDSLangFile = Get-Content "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault\DSLanguages.xml"
@@ -177,6 +182,8 @@ function mGetPropTranslations {
 	return $mPrpTrnsltns
 }
 
+# not all VDS powershell runspaces provide the multi-language labels $UIStrings
+# call this function in case $UIStrings[] key value pairs are needed but not available
 function mGetUIStrings {
 	# check language override settings of VDS
 	$mLCode = @{}
@@ -192,7 +199,12 @@ function mGetUIStrings {
 	Foreach ($xmlAttr in $xmlUIStrs) {
 		$mKey = $xmlAttr.ID
 		$mValue = $xmlAttr.InnerXML
-		$UIString.Add($mKey, $mValue)
+		try{
+			$UIString.Add($mKey, $mValue)
+		}
+		catch{
+			[Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowError("Failed adding this UIString $mKey; please check that the key does not exist already." , "Vault VDS Client")
+		}
 	}
 	return $UIString
 }

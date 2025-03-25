@@ -5,7 +5,8 @@
 # Accordingly, those configuration samples are provided as is with no warranty of any kind, and you use the applications at your own risk.
 
 
-#retrieve property value given by displayname from folder (ID)
+# retrieve property value given by displayname from folder (ID)
+# don't use repeatetly for multiple properties and use the mGetAllFolderProperties method instead
 function mGetFolderPropValue ([Int64] $mFldID, [STRING] $mDispName)
 {
 	$PropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("FLDR")
@@ -23,18 +24,50 @@ function mGetFolderPropValue ([Int64] $mFldID, [STRING] $mDispName)
 	Return $mPropVal
 }
 
-#retrieve the definition ID for given property by displayname
-function mGetFolderPropertyDefId ([STRING] $mDispName) {
-	$PropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("FLDR")
-	$propDefIds = @()
-	$PropDefs | ForEach-Object {
-		$propDefIds += $_.Id
-	} 
-	$mPropDef = $propDefs | Where-Object { $_.DispName -eq $mDispName}
-	Return $mPropDef.Id
+#Get parent folder object
+function mGetParentFldrByCat ($Category)
+{
+	$mWindowName = $dsWindow.Name
+	switch ($mWindowName) {
+		"FileWindow" {
+			$mPath = $Prop["_FilePath"].Value
+		}
+		"FolderWindow" {
+			$mPath = $Prop["_FolderPath"].Value
+		}
+	}
+
+	$mFld = $vault.DocumentService.GetFolderByPath($mPath)
+	if ($mFld) {
+		IF ($mFld.Cat.CatName -eq $Category) { $Global:mFldrFound = $true}
+		ElseIf ($mPath -ne "$"){
+			Do {
+				$mParID = $mFld.ParID
+				$mFld = $vault.DocumentService.GetFolderByID($mParID)
+				IF ($mFld.Cat.CatName -eq $Category) { $Global:mFldrFound = $true}
+			} Until (($mFld.Cat.CatName -eq $Category) -or ($mFld.FullName -eq "$"))
+		}
+	
+		If ($mFldrFound -eq $true) {
+			return $mFld
+		}
+		Else{
+			return $null
+		}
+	}
+	else{
+		return $null
+	}
+
 }
 
-#retrieve property value given by displayname from Custom Object (ID)
+#retrieve the definition ID for given property by displayname
+function mGetFolderPropertyDefId ([STRING] $mDispName) {
+	return mGetPropertyDefId $mDispName "FLDR"
+}
+
+# retrieve property value given by displayname from Custom Object (ID)
+# don't use repeatetly for multiple properties and use the mGetAllCustentProperties method instead
 function mGetCustentPropValue ([Int64] $mCentID, [STRING] $mDispName)
 {
 	$PropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("CUSTENT")
@@ -54,7 +87,16 @@ function mGetCustentPropValue ([Int64] $mCentID, [STRING] $mDispName)
 
 #retrieve the definition ID for given property by displayname
 function mGetCustentPropertyDefId ([STRING] $mDispName) {
-	$PropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("CUSTENT")
+	return mGetPropertyDefId $mDispName "CUSTENT"
+}
+
+function mGetCOPropertyDefId ([STRING] $mDispName) {
+	Return mGetPropertyDefId $mDispName "CO"
+}
+
+#retrieve the definition ID for given property by displayname
+function mGetPropertyDefId ([STRING] $mDispName,[STRING] $EntityClassId ) {
+	$PropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("$EntityClassId")
 	$propDefIds = @()
 	$PropDefs | ForEach-Object {
 		$propDefIds += $_.Id
@@ -71,7 +113,7 @@ function mGetCategoryDef ([String] $mEntType, [String] $mDispName)
 	return $mEntCatId
 }
 
-#update single property. Parameters: Folder ID, UDP display name and UDP value
+#update a folder property (single). Parameters: Folder ID, UDP display name and UDP value
 function mUpdateFldrProperties([Long] $FldId, [String] $mDispName, [Object] $mVal)
 {
 	$ent_idsArray = @()
@@ -90,12 +132,32 @@ function mUpdateFldrProperties([Long] $FldId, [String] $mDispName, [Object] $mVa
     catch { return $false}
 }
 
+# update a Custom Object (custent) property (single).
+function mUpdateCustentProperties([Long] $CustentId, [String] $mDispName, [Object] $mVal)
+{
+	$ent_idsArray = @()
+	$ent_idsArray += $CustentId
+	$propInstParam = New-Object Autodesk.Connectivity.WebServices.PropInstParam
+	$propInstParamArray = New-Object Autodesk.Connectivity.WebServices.PropInstParamArray
+	$mPropDefId = mGetCustentPropertyDefId $mDispName
+ 	$propInstParam.PropDefId = $mPropDefId
+	$propInstParam.Val = $mVal
+	$propInstParamArray.Items += $propInstParam
+	$propInstParamArrayArray += $propInstParamArray
+	Try{
+		$vault.CustomEntityService.UpdateCustomEntityProperties($ent_idsArray, $propInstParamArrayArray)
+	    return $true
+	}
+	catch { return $false}
+}
+
+
 #show current runspace ID as input parameter to be used in step by step debugging
 function ShowRunspaceID
 {
             $id = [runspace]::DefaultRunspace.Id
             $app = [System.Diagnostics.Process]::GetCurrentProcess()
-            [Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowMessage("application: $($app.name)"+[Environment]::NewLine+"runspace ID: $id", "VDS Step Into Debugging", "OK")
+            [System.Windows.Forms.MessageBox]::Show("application: $($app.name)"+[Environment]::NewLine+"runspace ID: $id")
 }
 
 #create folder structure based on seqential file numbering; 
@@ -157,6 +219,8 @@ function mGetUIOverride
 	}
 	return $mLCode
 }
+
+# client and server (database) languages may differ; read the enforced language code to capture multilanguage labels
 function mGetDBOverride
 {
 	[xml]$mDSLangFile = Get-Content "C:\ProgramData\Autodesk\Vault 2025\Extensions\DataStandard\Vault\DSLanguages.xml"
@@ -171,6 +235,8 @@ function mGetDBOverride
 	return $mLCode
 }
 
+# not all VDS powershell runspaces provide the multi-language labels $UIStrings
+# call this function in case $UIStrings[] key value pairs are needed but not available
 function mGetUIStrings
 {
 	# check language override settings of VDS
@@ -187,13 +253,18 @@ function mGetUIStrings
 	Foreach ($xmlAttr in $xmlUIStrs) {
 		$mKey = $xmlAttr.ID
 		$mValue = $xmlAttr.InnerXML
-		$UIString.Add($mKey, $mValue)
+		try{
+			$UIString.Add($mKey, $mValue)
 		}
+		catch{
+			[Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowError("Failed adding this UIString $mKey; please check the source file for duplicate keys." , "Vault VDS Client")
+		}
+	}
 	return $UIString
 }
 
 # VDS Dialogs and Tabs share property name translations $Prop[_XLTN_*] according DSLanguage.xml override or default powerShell UI culture;
-# VDS MenuCommand scripts don't read as a default; call this function in case $UIString[] key value pairs are needed
+# VDS MenuCommand scripts don't read as a default; call this function in case $PropertyTranslations[] key value pairs are needed
 function mGetPropTranslations
 {
 	# check language override settings of VDS
@@ -212,63 +283,64 @@ function mGetPropTranslations
 	Foreach ($xmlAttr in $xmlPrpTrnsltns) {
 		$mKey = $xmlAttr.Name
 		$mValue = $xmlAttr.InnerXML
-		$mPrpTrnsltns.Add($mKey, $mValue)
+		try {
+			$mPrpTrnsltns.Add($mKey, $mValue)
 		}
+		catch{
+			[Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowError("Failed adding the Property Translation $mKey; please check the source file for duplicate keys." , "Vault VDS Client")
+		}		
+	}
 	return $mPrpTrnsltns
 }
 
+# create Thin Client Link for a file; VDS does not provide a file object in DataSheets but the full path in _EditMode
 function Adsk.CreateTcFileLink([string]$FileFullVaultPath )
 {
-    $FullPaths = @($FileFullVaultPath)
-
-    $Files = $vault.DocumentService.FindLatestFilesByPaths($FullPaths)
-
-    $IDs = @($Files[0].Id)
-     
-    $PersIDs = $vault.KnowledgeVaultService.GetPersistentIds("FILE", $IDs, [Autodesk.Connectivity.WebServices.EntPersistOpt]::Latest)
-    $PersID = $PersIDs[0].TrimEnd("=")
-
-    $serverUri = [System.Uri]$Vault.InformationService.Url
-
-    $vaultName = $VaultConnection.Vault
-    $Server = $VaultConnection.Server
-
-    $TCLink = $serverUri.Scheme + "://" + $Server + "/AutodeskTC/" + $Server + "/" + $vaultName + "/#/Entity/Details?id=m" + "$PersID" + "&itemtype=File"
-    
-    return $TCLink
+	$file = $vault.DocumentService.FindLatestFilesByPaths(@($FileFullVaultPath))[0]
+	$serverUri = [System.Uri]$Vault.InformationService.Url			
+	$TcFileMasterLink = "$($serverUri.Scheme)://$($VaultConnection.Server)/AutodeskTC/$($VaultConnection.Vault)/explore/file/$($file.MasterId)"
+	return $TcFileMasterLink
 }
 
+# create Thin Client Link for a folder; VDS does not provide a folder object DataSheets but the full path in _EditMode
 function Adsk.CreateTcFolderLink([string]$FolderFullVaultPath)
 {
-    $Folder = $vault.DocumentService.GetFolderByPath($FolderFullVaultPath)
-
-    $IDs = @($Folder.Id)
-     
-    $PersIDs = $vault.KnowledgeVaultService.GetPersistentIds("FLDR", $IDs, [Autodesk.Connectivity.WebServices.EntPersistOpt]::Latest)
-    $PersID = $PersIDs[0].TrimEnd("=")
-
-    $serverUri = [System.Uri]$Vault.InformationService.Url
-
-    $vaultName = $VaultConnection.Vault
-    $Server = $VaultConnection.Server
-
-    $TCLink = $serverUri.Scheme + "://" + $Server + "/AutodeskTC/" + $Server + "/" + $vaultName + "/#/Entity/Entities?folder=m" + "$PersID" + "&start=0"
-    return $TCLink
+	$folder = $vault.DocumentService.GetFolderByPath($FolderFullVaultPath)
+	$serverUri = [System.Uri]$Vault.InformationService.Url			
+	$TcFolderLink = "$($serverUri.Scheme)://$($VaultConnection.Server)/AutodeskTC/$($VaultConnection.Vault)/explore/folder/$($folder.Id)"
+	return $TcFolderLink
 }
 
-function Adsk.CreateTCItemLink ([Long]$ItemId)
+# create Thin Client Link for an item; 
+function Adsk.CreateTcItemLink ([Long]$ItemMasterId)
 {
-	$IDs = @($ItemId)
-    $PersIDs = $vault.KnowledgeVaultService.GetPersistentIds("ITEM", $IDs, [Autodesk.Connectivity.WebServices.EntPersistOpt]::Latest)
-    $PersID = $PersIDs[0].TrimEnd("=")
+	$serverUri = [System.Uri]$Vault.InformationService.Url
+	$TcItemMasterLink = "$($serverUri.Scheme)://$($VaultConnection.Server)/AutodeskTC/$($VaultConnection.Vault)/items/item/$($ItemMasterId)"
+	return $TcItemMasterLink
+}
 
-    $serverUri = [System.Uri]$Vault.InformationService.Url
+# create Thin Client Link for an item of a given file
+function Adsk.CreateTcFileItemLink ([string]$FileFullVaultPath )
+{
+	$file = $vault.DocumentService.FindLatestFilesByPaths(@($FileFullVaultPath))[0]
+	#get item of the file
+	$item = $vault.ItemService.GetItemsByFileId($file.Id)[0]
+	#create TC link
+	$serverUri = [System.Uri]$Vault.InformationService.Url
+	$TcFileItemMasterLink = "$($serverUri.Scheme)://$($VaultConnection.Server)/AutodeskTC/$($VaultConnection.Vault)/items/item/$($item.MasterId)"
+	return $TcFileItemMasterLink
+}
 
-    $vaultName = $VaultConnection.Vault
-    $Server = $VaultConnection.Server
-
-    $TCLink = $serverUri.Scheme + "://" + $Server + "/AutodeskTC/" + $Server + "/" + $vaultName + "/#/Entity/Details?id=m" + "$PersID" + "&itemtype=Item"
-    return $TCLink
+# create Thin Client Link for ECO of a given file
+function Adsk.CreateTcFileEcoLink ([string]$FileFullVaultPath )
+{
+	$file = $vault.DocumentService.FindLatestFilesByPaths(@($FileFullVaultPath))[0]
+	#get change order
+	$changeOrder = $vault.ChangeOrderService.GetChangeOrderFilesByFileMasterId($file.MasterId)[0] 
+	#create TC link of CO
+	$serverUri = [System.Uri]$Vault.InformationService.Url
+	$TcChangeOrderLink = "$($serverUri.Scheme)://$($VaultConnection.Server)/AutodeskTC/$($VaultConnection.Vault)/changeorders/changeorder/$($changeOrder.ChangeOrder.Id)"
+	return $TcChangeOrderLink
 }
 
 #function to check that the current user is member of a named group; returns true or false
@@ -283,6 +355,22 @@ function Adsk.GroupMemberOf([STRING]$mGroupName)
 		{				
 			return $true
 		}
+	}
+	return $false
+}
+
+#function to check that the current user has a Vault behavior config permissions
+function Adsk.CheckCfgAdminPermission()
+{
+	$mAllPermissions = $vault.AdminService.GetPermissionsByUserId($vault.AdminService.Session.User.Id)
+	$mAllPermIds = @()
+	foreach ($item in $mAllPermissions)
+	{
+		$mAllPermIds += $item.Id
+	}
+	if ($mAllPermIds -contains 77 -and $mAllPermIds -contains 76) #76 = Vault Set Options; 77 = Vault Get Options
+	{
+		return $true
 	}
 	return $false
 }
@@ -321,29 +409,128 @@ function mSearchCustentOfCat([String]$mCatDispName)
 	}
 }
 
-function mGetProjectFolderPropToVaultFile ([String] $mFolderSourcePropertyName, [String] $mFileTargetPropertyName)
-{
-	$mPath = $Prop["_FilePath"].Value
-	$mFld = $vault.DocumentService.GetFolderByPath($mPath)
-
-	IF ($mFld.Cat.CatName -eq $UIString["CAT6"]) { $Global:mProjectFound = $true}
-	ElseIf ($mPath -ne "$"){
-		Do {
-			$mParID = $mFld.ParID
-			$mFld = $vault.DocumentService.GetFolderByID($mParID)
-			IF ($mFld.Cat.CatName -eq $UIString["CAT6"]) { $Global:mProjectFound = $true}
-		} Until (($mFld.Cat.CatName -eq $UIString["CAT6"]) -or ($mFld.FullName -eq "$"))
-	}
-
-	If ($mProjectFound -eq $true) {
-		#Project's property Value copied to file property
-		$Prop[$mFileTargetPropertyName].Value = mGetFolderPropValue $mFld.Id $mFolderSourcePropertyName
-	}
-	Else{
-		#empty field value if file will not link to a project
-		$Prop[$mFileTargetPropertyName].Value = ""
-	}
+# read a parent folder's (Id) properties and copy values to the current file's properties listed in the mapping table
+function mInheritProperties ($Id, $MappingTable) {
+	#read the source entity's properties
+	$mFldProps = @{}
+	$mFldProps += mGetAllFolderProperties($Id)
+	
+	#iterate the target properties and retrieve the value of the mapped source 
+	$MappingTable.GetEnumerator() | ForEach-Object {
+		$Prop[$_.Name].Value = $mFldProps[$_.Value]
+	}	
 }
+
+# read all properties for a single folder
+# returns a name/value map (dictionary) using the UDP's displayname as the key
+function mGetAllFolderProperties ([long] $FolderId)
+{
+	$mResult = @{}
+	if (!$global:mFldrPropDefs) {
+		$global:mFldrPropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("FLDR")
+	}
+	$propDefIds = @()
+	$mFldrPropDefs | ForEach-Object {
+		$propDefIds += $_.Id
+	}	
+	$mEntIDs = @()
+	$mEntIDs += $FolderId
+	$mPropertyInstances = $vault.PropertyService.GetProperties("FLDR", $mEntIDs, $propDefIds)	
+	Foreach($mPropInst in $mPropertyInstances){		
+		$Name = ($mFldrPropDefs | Where-Object {$_.Id -eq $mPropInst.PropDefId}).DispName
+		$mResult.Add($Name, $mPropInst.Val)
+	}	
+	Return $mResult
+}
+
+# read all properties for a single file (iteration)
+# returns a name/value map (dictionary) using the UDP's displayname as the key
+function mGetAllFileProperties ([long] $FileId)
+{
+	$mResult = @{}
+	if (!$global:mFilePropDefs) {
+		$global:mFilePropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("FILE")
+	}
+	$propDefIds = @()
+	$mFilePropDefs | ForEach-Object {
+		$propDefIds += $_.Id
+	}	
+	$mEntIDs = @()
+	$mEntIDs += $FileId
+	$mPropertyInstances = $vault.PropertyService.GetProperties("FILE", $mEntIDs, $propDefIds)	
+	Foreach($mPropInst in $mPropertyInstances){		
+		$Name = ($mFilePropDefs | Where-Object {$_.Id -eq $mPropInst.PropDefId}).DispName
+		$mResult.Add($Name, $mPropInst.Val)
+	}	
+	Return $mResult
+}
+
+# read all properties for a single item (iteration)
+# returns a name/value map (dictionary) using the UDP's displayname as the key
+function mGetAllItemProperties ([long] $ItemId)
+{
+	$mResult = @{}
+	if (!$global:mItemPropDefs) {
+		$global:mItemPropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("FILE")
+	}
+	$propDefIds = @()
+	$mItemPropDefs | ForEach-Object {
+		$propDefIds += $_.Id
+	}	
+	$mEntIDs = @()
+	$mEntIDs += $ItemId
+	$mPropertyInstances = $vault.PropertyService.GetProperties("ITEM", $mEntIDs, $propDefIds)	
+	Foreach($mPropInst in $mPropertyInstances){		
+		$Name = ($mItemPropDefs | Where-Object {$_.Id -eq $mPropInst.PropDefId}).DispName
+		$mResult.Add($Name, $mPropInst.Val)
+	}	
+	Return $mResult
+}
+
+# read all properties for a single change order
+# returns a name/value map (dictionary) using the UDP's displayname as the key
+function mGetAllChangeOrderProperties ([long] $mChangeOrderId)
+{
+	$mResult = @{}
+	if (!$global:mCoPropDefs) {
+		$global:mCoPropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("CO")
+	}
+	$propDefIds = @()
+	$mCoPropDefs | ForEach-Object {
+		$propDefIds += $_.Id
+	}	
+	$mEntIDs = @()
+	$mEntIDs += $mChangeOrderId
+	$mPropertyInstances = $vault.PropertyService.GetProperties("CO", $mEntIDs, $propDefIds)	
+	Foreach($mPropInst in $mPropertyInstances){		
+		$Name = ($mCoPropDefs | Where-Object {$_.Id -eq $mPropInst.PropDefId}).DispName
+		$mResult.Add($Name, $mPropInst.Val)
+	}	
+	Return $mResult
+}
+
+# read all properties for a single custom object
+# returns a name/value map (dictionary) using the UDP's displayname as the key
+function mGetAllCustentProperties ([long] $CustentId)
+{
+	$mResult = @{}
+	if (!$global:mCustentPropDefs) {
+		$global:mCustentPropDefs = $vault.PropertyService.GetPropertyDefinitionsByEntityClassId("CUSTENT")
+	}
+	$propDefIds = @()
+	$mCustentPropDefs | ForEach-Object {
+		$propDefIds += $_.Id
+	}	
+	$mEntIDs = @()
+	$mEntIDs += $CustentId
+	$mPropertyInstances = $vault.PropertyService.GetProperties("CUSTENT", $mEntIDs, $propDefIds)	
+	Foreach($mPropInst in $mPropertyInstances){		
+		$Name = ($mCustentPropDefs | Where-Object {$_.Id -eq $mPropInst.PropDefId}).DispName
+		$mResult.Add($Name, $mPropInst.Val)
+	}	
+	Return $mResult
+}
+
 
 #create folder structure based on a template;
 function mRecursivelyCreateFolders($sourceFolder, $targetFolder, $inclACL)
@@ -389,6 +576,9 @@ function mRecursivelyCreateFolders($sourceFolder, $targetFolder, $inclACL)
 			if($inclACL -eq $true)
 			{
 				$mCopiedACL = mCopyEntACL -SourceEnt  $folder -TargetEnt  $newTargetSubFolder
+			}
+			if ($null -eq $mCopiedACL) {
+				<# Action to perform if the condition is true #>
 			}
 			#recursively iterate
 			mrecursivelyCreateFolders -targetFolder $newTargetSubFolder -sourceFolder $folder -inclACL $inclACL
