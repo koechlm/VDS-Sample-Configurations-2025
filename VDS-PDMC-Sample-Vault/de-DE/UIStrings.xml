@@ -260,6 +260,8 @@
   <!--VDS-PDMC-Sample CAD-BOM-->
   <UIString ID="MSDCE_CAD-BOM01">Achtung - Baugruppe enthält virtuelle Komponenten! Diese werden in CAD-BOM Sichten gefiltert. Zur Auswertung virtueller Komponenten sollten sie Artikel Stückliste zuweisen.</UIString>
   <UIString ID="MSDCE_CAD-BOM02">Achtung - Gewählte Komponente enthält keine CAD-BOM Daten.</UIString>
+  <UIString ID="ADSK.TS.CAD-BOM03">Modellzustand</UIString>
+  <UIString ID="ADSK.TS.CAD-BOM04">Finde</UIString>
   <!--VDS-PDMC-Sample CAD-BOM end-->
 
   <!--VDS-PDMC-Sample Inventor Dialog-->
