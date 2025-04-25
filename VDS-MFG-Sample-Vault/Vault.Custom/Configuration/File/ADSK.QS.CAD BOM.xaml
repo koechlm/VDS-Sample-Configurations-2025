@@ -6,7 +6,7 @@
             xmlns:winFormTheme="clr-namespace:Autodesk.DataManagement.Client.Framework.Forms.SkinUtils;assembly=Autodesk.DataManagement.Client.Framework.Forms"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
             x:Name="MainWindow"
-            behaviours:TabTitleBehavior.TabTitle="$UIString[LBL38]" d:DesignWidth="474" d:DesignHeight="264">
+            behaviours:TabTitleBehavior.TabTitle="$UIString[LBL38]" d:DesignWidth="1019" d:DesignHeight="264">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -24,7 +24,7 @@
             <Style TargetType="{x:Type Label}" BasedOn="{StaticResource DataStandardLabelStyle}"/>
             <Style x:Key="DataStandardTextBoxStyle" TargetType="{x:Type TextBox}" BasedOn="{StaticResource ThemedTextBoxStyle}">
                 <Setter Property="IsReadOnly" Value="True"/>
-		<Setter Property="Height" Value="24" />
+                <Setter Property="Height" Value="24" />
                 <Setter Property="VerticalContentAlignment" Value="Center" />
                 <Setter Property="Padding" Value="4,0,0,0"/>
             </Style>
@@ -51,7 +51,7 @@
             <!--#endregion themed styles for VE datasheet standard controls-->
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Margin="0">
+    <Grid Margin="5,10,5,5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
@@ -59,10 +59,24 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <DataGrid x:Name="bomList" AutoGenerateColumns="False" IsReadOnly="True" ColumnWidth="Auto" Grid.Row="1" Grid.ColumnSpan="4">
+        <Grid Grid.ColumnSpan="4" Margin="0,0,0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="305"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="{Binding UIString[ADSK.TS.CAD-BOM03], FallbackValue='Model State'}"/>
+            <ComboBox x:Name="cmbModelStates" Width="Auto" MinWidth="200" VerticalAlignment="Center" Grid.Column="1" DisplayMemberPath="Key" SelectedValuePath="Value" MaxWidth="300" HorizontalAlignment="Left"/>
+            <Button x:Name="btnCadBomClear" IsEnabled="False" Command="{Binding PsCmd[CadBomClearButton_Click]}" Grid.Column="2" Content="  X  " Foreground="Red" FontWeight="Bold" HorizontalAlignment="Right" Margin="20,1,0,1" ToolTip="Clear search text"/>
+            <TextBox x:Name="txtCadBomSearch" Grid.Column="3" TextWrapping="Wrap" Text="" IsReadOnly="False" MaxWidth="300"/>
+            <Button x:Name="btnCadBomFind" Command="{Binding PsCmd[CadBomSearchButton_Click]}" Grid.Column="4" HorizontalAlignment="Left" Content="{Binding UIString[ADSK.TS.CAD-BOM04], FallbackValue='Find'}" MinWidth="60" Margin="0,1,0,1" ToolTip="Search and filter the grid"/>
+        </Grid>
+        <DataGrid x:Name="bomList" AutoGenerateColumns="False" IsReadOnly="True" ColumnWidth="Auto" Grid.Row="1" Grid.ColumnSpan="4" IsSynchronizedWithCurrentItem="True">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="Auto" Header="{Binding DataContext.UIString[LBL58], FallbackValue=Preview}">
                     <DataGridTemplateColumn.HeaderTemplate>
@@ -76,8 +90,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-
-                <DataGridTextColumn x:Name="clmPosition" Binding="{Binding Position}">
+                <DataGridTextColumn x:Name="clmPosition" Binding="{Binding Position}" SortDirection="Ascending">
                     <DataGridTextColumn.HeaderTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DataContext.UIString[LBL15], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>

@@ -261,6 +261,8 @@
   <!--VDS-PDMC-Sample CAD-BOM-->
   <UIString ID="MSDCE_CAD-BOM01">Note - Assembly contains virtual components! These are filtered in CAD-BOM views. Create Item BOM to leverage virtual components' meta data.</UIString>
   <UIString ID="MSDCE_CAD-BOM02">Note - Selected component has no CAD-BOM data available.</UIString>
+  <UIString ID="ADSK.TS.CAD-BOM03">Model State</UIString>
+  <UIString ID="ADSK.TS.CAD-BOM04">Find</UIString>
   <!--VDS-PDMC-Sample CAD-BOM end-->
 
   <!--VDS-PDMC-Sample Inventor Dialog-->

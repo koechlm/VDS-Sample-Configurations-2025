@@ -349,13 +349,71 @@ function OnTabContextChanged
 {
 	$xamlFile = [System.IO.Path]::GetFileName($VaultContext.UserControl.XamlFile)
 	
-	if ($VaultContext.SelectedObject.TypeId.SelectionContext -eq "FileMaster" -and $xamlFile -eq "ADSK.QS.CAD BOM.xaml")
-	{
+	if ($VaultContext.SelectedObject.TypeId.SelectionContext -eq "FileMaster" -and $xamlFile -eq "ADSK.QS.CAD BOM.xaml") {
 		$fileMasterId = $vaultContext.SelectedObject.Id
-		$file = $vault.DocumentService.GetLatestFileByMasterId($fileMasterId)
-		$bom = @(GetFileBOM($file.id))
-		$dsWindow.FindName("bomList").ItemsSource = $bom
+		$global:file = $vault.DocumentService.GetLatestFileByMasterId($fileMasterId)
+
+		#check for model state BOMs;  
+		# model state names and BOMComp Id are the key value pairs of the combobox
+		$dsWindow.FindName("bomList").ItemsSource = $null
+		$dsWindow.FindName("cmbModelStates").ItemsSource = $null
+		$dsWindow.FindName("cmbModelStates").SelectedIndex = -1
+		$dsWindow.FindName("cmbModelStates").IsEnabled = $false
+		#reset the search text box
+		$dsWindow.FindName("txtCadBomSearch").Text = ""
+
+		# applies to Inventor IAMs with true model state = false
+		if ($file.Name -match "\.iam$" ) {
+			$mMsPropSysNames = @("HasModelState", "IsTrueModelState")
+			$mPropDefs = $vault.PropertyService.FindPropertyDefinitionsBySystemNames("FILE", $mMsPropSysNames)
+			$mPropInsts = @()
+			[Int64]$mFileId = $file.Id
+			$mPropInsts += $vault.PropertyService.GetPropertiesByEntityIds("FILE", @($mFileId))
+			$mPropNameValues = @{}
+			$mPropInsts = $mPropInsts | Where-Object { $_.PropDefId -eq $mPropDefs[0].Id -or $_.PropDefId -eq $mPropDefs[1].Id } 
+			ForEach ($mPropInst in $mPropInsts) {
+				$mSysName = ($mPropDefs | Where-Object { $_.Id -eq $mPropInst.PropDefId }).SysName
+				$mPropNameValues.Add($mSysName, $mPropInst.Val)
+			}
+
+			if ($mPropNameValues["HasModelState"] -eq $true -and $mPropNameValues["IsTrueModelState"] -eq $false) {
+				$_MsArray = @()
+				$_MsArray += mGetMdlStates($file.id)
+			}
+		}
+
+		#read the primary BOM
+		try {
+			$bom = @(GetFileBOM $file.id 0)
+			$dsWindow.FindName("bomList").ItemsSource = $bom
+		}
+		catch {
+			[Autodesk.DataManagement.Client.Framework.Forms.Library]::ShowError("CAD-BOM creation failed due to incomplete data; check-out, save and check-in the assembly before you try again.", "Data Standard – CAD-BOM")
+		}
+
+		# read model state BOMs on demand;		
+		if ($dsWindow.FindName("cmbModelStates").ItemsSource.Count -gt 0) {
+			# add a selection changed event to the combobox
+			$dsWindow.FindName("cmbModelStates").add_SelectionChanged({
+					$mModelStateId = $dsWindow.FindName("cmbModelStates").SelectedValue
+					if ($dsWindow.FindName("cmbModelStates").SelectedIndex -eq -1) {
+						$dsWindow.FindName("bomList").ItemsSource = $null
+					}
+					else {
+						$mMdlStateBom = @(GetFileBOM $file.id $mModelStateId) #($file.id, $mModelStateId)
+						$dsWindow.FindName("bomList").ItemsSource = $mMdlStateBom # model state BOMs are internal component BOMs
+						#update the global bom list to restore clearing the search text box
+						$global:currentBOMList = $mMdlStateBom
+						#clear the search text box as the grid content has changed
+						CadBomClearButton_Click
+					}
+				})
+		}
+
+		$global:mFileBOM = $null #clear the global variable to release the grid content
+		return
 	}
+
 	if ($VaultContext.SelectedObject.TypeId.SelectionContext -eq "ItemMaster" -and $xamlFile -eq "Associated Files.xaml")
 	{
 		$items = $vault.ItemService.GetItemsByIds(@($vaultContext.SelectedObject.Id))
